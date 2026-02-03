@@ -24,10 +24,17 @@ A writing companion for maintaining a blog with consistent voice and quality.
 
 2. Run the post analyzer to bootstrap your style guide:
    ```bash
+   # With auth (your own blog - includes block analysis)
    node skills/blogger/scripts/analyze-posts.js \
      --site=https://yourblog.com \
      --credentials=.credentials/wordpress.json \
      --output=.blog-style/
+
+   # Or public mode (any WordPress site)
+   node skills/blogger/scripts/analyze-posts.js \
+     --site=https://any-wordpress-site.com \
+     --output=.blog-style/ \
+     --public
    ```
 
 3. Review and complete the generated `.blog-style/voice.md`

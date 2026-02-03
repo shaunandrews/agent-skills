@@ -53,12 +53,22 @@ Style guides live in the project root:
 Run the analyzer to sample existing posts and extract patterns:
 
 ```bash
-# From the skill's scripts directory
+# Authenticated mode (recommended for your own blog - richer analysis)
 node "{baseDir}/scripts/analyze-posts.js" \
   --site="https://example.com" \
   --credentials="${PROJECT_ROOT}/.credentials/wordpress.json" \
   --output="${PROJECT_ROOT}/.blog-style/"
+
+# Public mode (any WordPress site - no auth required)
+node "{baseDir}/scripts/analyze-posts.js" \
+  --site="https://any-wordpress-site.com" \
+  --output="${PROJECT_ROOT}/.blog-style/" \
+  --public
 ```
+
+**Modes:**
+- **Authenticated:** Uses `context=edit` API, gets raw block content, analyzes block types used
+- **Public:** Uses rendered HTML, works without credentials, basic text analysis only
 
 The analyzer will:
 1. Fetch recent posts (default: 20, varied by category/tag)
