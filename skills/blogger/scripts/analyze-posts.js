@@ -67,14 +67,26 @@ function stripHTML(html) {
   return html
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    // Preserve paragraph breaks
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(?:div|h[1-6]|li|blockquote)>/gi, '\n\n')
+    // Strip remaining tags
     .replace(/<[^>]+>/g, ' ')
+    // Decode entities
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/\s+/g, ' ')
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&#8230;/g, '...')
+    // Normalize whitespace (but preserve paragraph breaks)
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n\s*\n/g, '\n\n')
     .trim();
 }
 
@@ -142,8 +154,8 @@ function analyzePost(post) {
   const words = getWords(content);
   const paragraphs = content.split(/\n\n+/).filter(p => p.trim().length > 0);
   
-  // Contractions
-  const contractions = (content.match(/\b\w+'(t|s|re|ve|ll|d|m)\b/gi) || []).length;
+  // Contractions (including curly apostrophes)
+  const contractions = (content.match(/\b\w+[''](t|s|re|ve|ll|d|m)\b/gi) || []).length;
   
   // Questions
   const questions = (content.match(/\?/g) || []).length;
