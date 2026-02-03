@@ -474,8 +474,8 @@ async function main() {
   
   const site = args.site.replace(/\/$/, '');
   const outputDir = args.output || './.blog-style';
-  const count = parseInt(args.count) || 20;
-  const minWords = parseInt(args['min-words']) || 300;
+  const count = parseInt(args.count) || 100;
+  const minWords = parseInt(args['min-words']) || 1;
   
   // Load credentials if not public mode
   let auth = null;
