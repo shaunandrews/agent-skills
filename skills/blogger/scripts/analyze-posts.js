@@ -6,14 +6,19 @@
  * a draft style guide. Part of the blogger skill.
  * 
  * Usage:
+ *   # With authentication (recommended - richer analysis)
  *   node analyze-posts.js --site=https://example.com --credentials=path/to/creds.json --output=path/to/.blog-style/
+ * 
+ *   # Public mode (no auth required - basic analysis)
+ *   node analyze-posts.js --site=https://example.com --output=path/to/.blog-style/ --public
  * 
  * Options:
  *   --site          WordPress site URL (required)
- *   --credentials   Path to WordPress credentials JSON (required)
+ *   --credentials   Path to WordPress credentials JSON (optional with --public)
  *   --output        Output directory for style guide (default: ./.blog-style/)
  *   --count         Number of posts to analyze (default: 20)
  *   --min-words     Minimum word count per post (default: 300)
+ *   --public        Use public API only (no auth, rendered HTML)
  */
 
 const https = require('https');
@@ -25,9 +30,16 @@ const path = require('path');
 function parseArgs() {
   const args = {};
   process.argv.slice(2).forEach(arg => {
-    const match = arg.match(/^--(\w+)=(.+)$/);
-    if (match) {
-      args[match[1]] = match[2];
+    // Handle --flag=value
+    const matchValue = arg.match(/^--([a-z-]+)=(.+)$/i);
+    if (matchValue) {
+      args[matchValue[1]] = matchValue[2];
+      return;
+    }
+    // Handle --flag (boolean)
+    const matchBool = arg.match(/^--([a-z-]+)$/i);
+    if (matchBool) {
+      args[matchBool[1]] = true;
     }
   });
   return args;
@@ -62,7 +74,28 @@ function fetchJSON(url, auth) {
   });
 }
 
-// Strip HTML tags and decode entities
+// Extract block types from raw block content
+function extractBlockTypes(raw) {
+  const blockMatches = raw.match(/<!-- wp:([a-z-]+)/g) || [];
+  const blocks = {};
+  blockMatches.forEach(match => {
+    const type = match.replace('<!-- wp:', '');
+    blocks[type] = (blocks[type] || 0) + 1;
+  });
+  return blocks;
+}
+
+// Strip block comments from raw content, leaving clean text
+function stripBlockComments(raw) {
+  return raw
+    .replace(/<!-- \/?wp:[^>]+ -->/g, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\n\s*\n/g, '\n\n')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
+}
+
+// Strip HTML tags and decode entities (for rendered content)
 function stripHTML(html) {
   return html
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
@@ -145,9 +178,19 @@ function fleschKincaidGrade(text) {
 }
 
 // Analyze a single post
-function analyzePost(post) {
-  const title = stripHTML(post.title.rendered || post.title);
-  const content = stripHTML(post.content.rendered || post.content);
+function analyzePost(post, useRaw = false) {
+  const title = post.title.raw || stripHTML(post.title.rendered || post.title);
+  
+  let content;
+  let blockTypes = {};
+  
+  if (useRaw && post.content.raw) {
+    content = stripBlockComments(post.content.raw);
+    blockTypes = extractBlockTypes(post.content.raw);
+  } else {
+    content = stripHTML(post.content.rendered || post.content);
+  }
+  
   const fullText = title + ' ' + content;
   
   const sentences = getSentences(content);
@@ -184,7 +227,8 @@ function analyzePost(post) {
     fleschReadingEase: fleschReadingEase(content),
     fleschKincaidGrade: fleschKincaidGrade(content),
     categories: post.categories || [],
-    tags: post.tags || []
+    tags: post.tags || [],
+    blockTypes
   };
 }
 
@@ -196,6 +240,19 @@ function aggregateAnalysis(analyses) {
   const avg = (arr, key) => arr.reduce((sum, a) => sum + a[key], 0) / count;
   const min = (arr, key) => Math.min(...arr.map(a => a[key]));
   const max = (arr, key) => Math.max(...arr.map(a => a[key]));
+  
+  // Combine block types across all posts
+  const blockTypes = {};
+  analyses.forEach(a => {
+    Object.entries(a.blockTypes || {}).forEach(([type, count]) => {
+      blockTypes[type] = (blockTypes[type] || 0) + count;
+    });
+  });
+  
+  // Sort by frequency
+  const sortedBlocks = Object.entries(blockTypes)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => ({ type, count }));
   
   return {
     postCount: count,
@@ -213,7 +270,8 @@ function aggregateAnalysis(analyses) {
     ranges: {
       wordCount: { min: min(analyses, 'wordCount'), max: max(analyses, 'wordCount') },
       sentenceLength: { min: min(analyses, 'avgSentenceLength'), max: max(analyses, 'avgSentenceLength') }
-    }
+    },
+    blockTypes: sortedBlocks
   };
 }
 
@@ -287,9 +345,28 @@ function interpretAnalysis(agg) {
 }
 
 // Generate the style guide markdown
-function generateStyleGuide(agg, observations, siteUrl) {
+function generateStyleGuide(agg, observations, siteUrl, mode) {
   const grade = agg.fleschKincaidGrade.toFixed(1);
   const ease = agg.fleschReadingEase.toFixed(0);
+  
+  // Block usage section (only if we have block data)
+  let blockSection = '';
+  if (agg.blockTypes && agg.blockTypes.length > 0) {
+    const topBlocks = agg.blockTypes.slice(0, 10);
+    const blockRows = topBlocks.map(b => `| ${b.type} | ${b.count} |`).join('\n');
+    blockSection = `
+
+---
+
+## Content Blocks Used
+
+| Block Type | Count |
+|------------|-------|
+${blockRows}
+
+*This shows which WordPress blocks appear most frequently in your posts.*
+`;
+  }
   
   return `# Blog Style Guide
 
@@ -358,7 +435,7 @@ ${agg.secondPersonRate > 0.01 ? 'Second person (you/your) used frequently — ad
 - Average paragraph: ${agg.avgParagraphLength.toFixed(1)} sentences
 - Target sentence length: ${agg.avgSentenceLength.toFixed(0)} words
 - Target reading level: Grade ${grade}
-
+${blockSection}
 ---
 
 ## To Complete
@@ -387,8 +464,11 @@ async function main() {
     console.error('Error: --site is required');
     process.exit(1);
   }
-  if (!args.credentials) {
-    console.error('Error: --credentials is required');
+  
+  const publicMode = args.public !== undefined;
+  
+  if (!publicMode && !args.credentials) {
+    console.error('Error: --credentials is required (or use --public for unauthenticated mode)');
     process.exit(1);
   }
   
@@ -397,23 +477,33 @@ async function main() {
   const count = parseInt(args.count) || 20;
   const minWords = parseInt(args['min-words']) || 300;
   
-  // Load credentials
-  let creds;
-  try {
-    creds = JSON.parse(fs.readFileSync(args.credentials, 'utf8'));
-  } catch (e) {
-    console.error(`Error loading credentials: ${e.message}`);
-    process.exit(1);
+  // Load credentials if not public mode
+  let auth = null;
+  let useRaw = false;
+  
+  if (!publicMode && args.credentials) {
+    let creds;
+    try {
+      creds = JSON.parse(fs.readFileSync(args.credentials, 'utf8'));
+    } catch (e) {
+      console.error(`Error loading credentials: ${e.message}`);
+      process.exit(1);
+    }
+    
+    if (creds.rest_api) {
+      auth = `${creds.rest_api.username}:${creds.rest_api.app_password}`;
+      useRaw = true; // Use raw content when authenticated
+    }
   }
   
-  const auth = creds.rest_api 
-    ? `${creds.rest_api.username}:${creds.rest_api.app_password}`
-    : null;
-  
+  const mode = useRaw ? 'authenticated (raw blocks)' : 'public (rendered HTML)';
   console.log(`Analyzing posts from ${site}...`);
+  console.log(`Mode: ${mode}`);
   
-  // Fetch posts
-  const postsUrl = `${site}/wp-json/wp/v2/posts?per_page=${count}&status=publish&orderby=date&order=desc`;
+  // Fetch posts - use context=edit if authenticated for raw content
+  const contextParam = useRaw ? '&context=edit' : '';
+  const postsUrl = `${site}/wp-json/wp/v2/posts?per_page=${count}&status=publish&orderby=date&order=desc${contextParam}`;
+  
   let posts;
   try {
     posts = await fetchJSON(postsUrl, auth);
@@ -432,7 +522,7 @@ async function main() {
   // Analyze each post
   const analyses = [];
   for (const post of posts) {
-    const analysis = analyzePost(post);
+    const analysis = analyzePost(post, useRaw);
     if (analysis.wordCount >= minWords) {
       analyses.push(analysis);
       console.log(`  ✓ "${analysis.title.substring(0, 50)}..." (${analysis.wordCount} words)`);
@@ -456,8 +546,12 @@ async function main() {
   console.log(`  Reading level: Grade ${agg.fleschKincaidGrade.toFixed(1)}`);
   console.log(`  Flesch score: ${agg.fleschReadingEase.toFixed(0)}/100`);
   
+  if (agg.blockTypes && agg.blockTypes.length > 0) {
+    console.log(`  Top blocks: ${agg.blockTypes.slice(0, 5).map(b => b.type).join(', ')}`);
+  }
+  
   // Generate style guide
-  const styleGuide = generateStyleGuide(agg, observations, site);
+  const styleGuide = generateStyleGuide(agg, observations, site, mode);
   
   // Write output
   fs.mkdirSync(outputDir, { recursive: true });
