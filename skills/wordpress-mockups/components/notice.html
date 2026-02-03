@@ -1,0 +1,270 @@
+<!--
+  Component: Notice & Snackbar
+  Source: @wordpress/components/src/notice, snackbar
+  
+  Notice types:
+  - Default (info)
+  - Success (.is-success)
+  - Warning (.is-warning)
+  - Error (.is-error)
+  
+  Snackbar: Toast-style notification at bottom of screen
+-->
+
+<style>
+/* =====================
+   NOTICE
+   ===================== */
+
+.components-notice {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--wp-white);
+  border-left: 4px solid var(--wp-admin-theme-color);
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  color: var(--wp-gray-900);
+}
+
+.components-notice.is-success {
+  border-left-color: var(--wp-alert-green);
+  background-color: #e6f6e9;
+}
+
+.components-notice.is-warning {
+  border-left-color: var(--wp-alert-yellow);
+  background-color: #fcf0d4;
+}
+
+.components-notice.is-error {
+  border-left-color: var(--wp-alert-red);
+  background-color: #f4d4d4;
+}
+
+.components-notice__content {
+  flex-grow: 1;
+  margin: var(--wp-grid-unit-05) 0;
+}
+
+.components-notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--wp-grid-unit-15);
+  margin-top: var(--wp-grid-unit-15);
+}
+
+/* Dismissible notice */
+.components-notice.is-dismissible .components-notice__content {
+  margin-right: var(--wp-grid-unit-30);
+}
+
+.components-notice__dismiss {
+  color: var(--wp-gray-700);
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.components-notice__dismiss:hover {
+  color: var(--wp-gray-900);
+}
+
+/* Notice list */
+.components-notice-list {
+  max-width: 100%;
+}
+
+.components-notice-list .components-notice {
+  margin-bottom: var(--wp-grid-unit-10);
+}
+
+/* =====================
+   SNACKBAR
+   ===================== */
+
+.components-snackbar {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-radius: var(--wp-radius-medium);
+  box-shadow: var(--wp-elevation-small);
+  color: var(--wp-white);
+  padding: var(--wp-grid-unit-15) 20px;
+  max-width: 600px;
+  cursor: pointer;
+}
+
+.components-snackbar:focus {
+  box-shadow: inset 0 0 0 1px var(--wp-white), 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+  outline: none;
+}
+
+.components-snackbar__content {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--wp-grid-unit-15);
+  line-height: var(--wp-default-line-height);
+}
+
+.components-snackbar__action {
+  color: var(--wp-white);
+  text-decoration: underline;
+  flex-shrink: 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: inherit;
+  padding: 0;
+}
+
+.components-snackbar__action:hover {
+  text-decoration: none;
+}
+
+.components-snackbar__action:focus {
+  outline: 1px dotted var(--wp-white);
+}
+
+.components-snackbar__dismiss-button {
+  margin-left: var(--wp-grid-unit-30);
+  color: var(--wp-white);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+}
+
+.components-snackbar__dismiss-button svg {
+  fill: currentColor;
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+}
+
+/* Snackbar list (positioned at bottom) */
+.components-snackbar-list {
+  position: fixed;
+  bottom: var(--wp-grid-unit-30);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--wp-z-snackbar);
+  pointer-events: none;
+}
+
+.components-snackbar-list .components-snackbar {
+  pointer-events: auto;
+  margin-top: var(--wp-grid-unit-10);
+}
+
+/* With icon */
+.components-snackbar__content-with-icon {
+  position: relative;
+  padding-left: var(--wp-icon-size);
+}
+
+.components-snackbar__icon {
+  position: absolute;
+  left: calc(-1 * var(--wp-grid-unit-10));
+  top: 0;
+}
+
+.components-snackbar__icon svg {
+  fill: currentColor;
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Default Notice (Info) -->
+<div class="components-notice">
+  <div class="components-notice__content">
+    This is an informational notice.
+  </div>
+</div>
+
+<!-- Success Notice -->
+<div class="components-notice is-success">
+  <div class="components-notice__content">
+    Settings saved successfully.
+  </div>
+</div>
+
+<!-- Warning Notice -->
+<div class="components-notice is-warning">
+  <div class="components-notice__content">
+    This action may have unintended consequences.
+  </div>
+</div>
+
+<!-- Error Notice -->
+<div class="components-notice is-error">
+  <div class="components-notice__content">
+    An error occurred while saving. Please try again.
+  </div>
+</div>
+
+<!-- Dismissible Notice -->
+<div class="components-notice is-success is-dismissible">
+  <div class="components-notice__content">
+    Post published successfully.
+  </div>
+  <button class="components-button has-icon components-notice__dismiss" aria-label="Dismiss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Notice with Actions -->
+<div class="components-notice is-warning">
+  <div class="components-notice__content">
+    <p>A new version of WordPress is available.</p>
+    <div class="components-notice__actions">
+      <button class="components-button is-secondary">Update now</button>
+      <button class="components-button is-tertiary">Remind me later</button>
+    </div>
+  </div>
+</div>
+
+<!-- Snackbar (Toast) -->
+<div class="components-snackbar">
+  <div class="components-snackbar__content">
+    Post published.
+  </div>
+</div>
+
+<!-- Snackbar with Action -->
+<div class="components-snackbar">
+  <div class="components-snackbar__content">
+    <span>Post moved to trash.</span>
+    <button class="components-snackbar__action">Undo</button>
+  </div>
+</div>
+
+<!-- Snackbar with Dismiss -->
+<div class="components-snackbar">
+  <div class="components-snackbar__content">
+    Settings saved.
+  </div>
+  <button class="components-snackbar__dismiss-button" aria-label="Dismiss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Snackbar List (positioned) -->
+<div class="components-snackbar-list">
+  <div class="components-snackbar">
+    <div class="components-snackbar__content">
+      Changes saved.
+    </div>
+  </div>
+</div>

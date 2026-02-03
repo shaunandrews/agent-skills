@@ -1,0 +1,299 @@
+<!--
+  Component: Select / Dropdown
+  Source: @wordpress/components/src/select-control
+  
+  Includes:
+  - Native select
+  - Select with label
+  - Select sizes
+-->
+
+<style>
+/* =====================
+   SELECT CONTROL
+   ===================== */
+
+.components-select-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-grid-unit-10);
+  width: 100%;
+}
+
+.components-select-control.is-horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Label */
+.components-select-control__label {
+  font-size: var(--wp-font-size-x-small);
+  font-weight: var(--wp-font-weight-medium);
+  line-height: var(--wp-font-line-height-small);
+  text-transform: uppercase;
+  color: var(--wp-gray-700);
+}
+
+/* Select Wrapper */
+.components-select-control__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Select Input */
+.components-select-control__input {
+  appearance: none;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--wp-grid-unit-40) 0 var(--wp-grid-unit-15);
+  border: 1px solid var(--wp-gray-600);
+  border-radius: var(--wp-radius-small);
+  background: var(--wp-white);
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  line-height: var(--wp-default-line-height);
+  color: var(--wp-gray-900);
+  cursor: pointer;
+  outline: none;
+}
+
+.components-select-control__input:focus {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 0.5px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.components-select-control__input:disabled {
+  background: var(--wp-gray-100);
+  color: var(--wp-gray-600);
+  cursor: not-allowed;
+}
+
+/* Chevron Icon */
+.components-select-control__input-container::after {
+  content: "";
+  position: absolute;
+  right: var(--wp-grid-unit-15);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--wp-gray-900);
+  pointer-events: none;
+}
+
+/* Size: Compact (36px) */
+.components-select-control.is-compact .components-select-control__input {
+  height: 36px;
+}
+
+/* Size: Small (32px) */
+.components-select-control.is-small .components-select-control__input {
+  height: 32px;
+  font-size: var(--wp-font-size-small);
+}
+
+/* Help text */
+.components-select-control__help {
+  font-size: var(--wp-font-size-small);
+  color: var(--wp-gray-700);
+  margin-top: var(--wp-grid-unit-05);
+}
+
+/* =====================
+   CUSTOM SELECT (styled)
+   ===================== */
+
+.components-custom-select-control {
+  position: relative;
+}
+
+.components-custom-select-control__button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--wp-grid-unit-15);
+  border: 1px solid var(--wp-gray-600);
+  border-radius: var(--wp-radius-small);
+  background: var(--wp-white);
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  color: var(--wp-gray-900);
+  cursor: pointer;
+  text-align: left;
+}
+
+.components-custom-select-control__button:hover {
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-custom-select-control__button:focus {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 0.5px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.components-custom-select-control__button svg {
+  fill: var(--wp-gray-900);
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+  flex-shrink: 0;
+}
+
+/* Dropdown Menu */
+.components-custom-select-control__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--wp-grid-unit-05);
+  padding: var(--wp-grid-unit-05) 0;
+  background: var(--wp-white);
+  border: 1px solid var(--wp-gray-300);
+  border-radius: var(--wp-radius-small);
+  box-shadow: var(--wp-elevation-medium);
+  z-index: var(--wp-z-dropdown);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.components-custom-select-control__item {
+  display: flex;
+  align-items: center;
+  gap: var(--wp-grid-unit-10);
+  padding: var(--wp-grid-unit-10) var(--wp-grid-unit-15);
+  font-size: var(--wp-font-size-medium);
+  color: var(--wp-gray-900);
+  cursor: pointer;
+}
+
+.components-custom-select-control__item:hover {
+  background: var(--wp-gray-100);
+}
+
+.components-custom-select-control__item.is-selected {
+  background: var(--wp-admin-theme-color);
+  color: var(--wp-white);
+}
+
+.components-custom-select-control__item-hint {
+  color: var(--wp-gray-600);
+  margin-left: auto;
+  font-size: var(--wp-font-size-small);
+}
+
+.components-custom-select-control__item.is-selected .components-custom-select-control__item-hint {
+  color: rgba(255, 255, 255, 0.7);
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Basic Select -->
+<div class="components-select-control">
+  <label class="components-select-control__label">Font size</label>
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input">
+      <option value="small">Small</option>
+      <option value="medium" selected>Medium</option>
+      <option value="large">Large</option>
+      <option value="x-large">Extra Large</option>
+    </select>
+  </div>
+</div>
+
+<!-- Select without label -->
+<div class="components-select-control">
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input">
+      <option value="">Select an option...</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+  </div>
+</div>
+
+<!-- Compact Select (36px) -->
+<div class="components-select-control is-compact">
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input">
+      <option value="px">px</option>
+      <option value="em">em</option>
+      <option value="rem">rem</option>
+      <option value="%">%</option>
+    </select>
+  </div>
+</div>
+
+<!-- Small Select (32px) -->
+<div class="components-select-control is-small">
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+  </div>
+</div>
+
+<!-- Horizontal Label -->
+<div class="components-select-control is-horizontal">
+  <label class="components-select-control__label" style="min-width: 80px;">Position</label>
+  <div class="components-select-control__input-container" style="flex: 1;">
+    <select class="components-select-control__input">
+      <option value="left">Left</option>
+      <option value="center">Center</option>
+      <option value="right">Right</option>
+    </select>
+  </div>
+</div>
+
+<!-- Disabled Select -->
+<div class="components-select-control">
+  <label class="components-select-control__label">Template</label>
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input" disabled>
+      <option value="default">Default</option>
+    </select>
+  </div>
+</div>
+
+<!-- Select with Help -->
+<div class="components-select-control">
+  <label class="components-select-control__label">Image size</label>
+  <div class="components-select-control__input-container">
+    <select class="components-select-control__input">
+      <option value="thumbnail">Thumbnail – 150×150</option>
+      <option value="medium" selected>Medium – 300×300</option>
+      <option value="large">Large – 1024×1024</option>
+      <option value="full">Full Size</option>
+    </select>
+  </div>
+  <p class="components-select-control__help">Choose the size of the displayed image.</p>
+</div>
+
+<!-- Custom Select (styled dropdown) -->
+<div class="components-custom-select-control">
+  <button class="components-custom-select-control__button" type="button">
+    <span>Medium</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+    </svg>
+  </button>
+  <!-- Dropdown (shown when open) -->
+  <div class="components-custom-select-control__menu" style="display: none;">
+    <div class="components-custom-select-control__item">Small</div>
+    <div class="components-custom-select-control__item is-selected">Medium</div>
+    <div class="components-custom-select-control__item">Large</div>
+    <div class="components-custom-select-control__item">
+      Extra Large
+      <span class="components-custom-select-control__item-hint">32px</span>
+    </div>
+  </div>
+</div>

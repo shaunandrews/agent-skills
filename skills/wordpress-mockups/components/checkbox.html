@@ -1,0 +1,331 @@
+<!--
+  Component: Checkbox & Toggle
+  Source: @wordpress/components/src/checkbox-control, form-toggle, toggle-control
+  
+  Includes:
+  - Checkbox (single)
+  - Toggle switch
+  - Radio buttons
+-->
+
+<style>
+/* =====================
+   CHECKBOX
+   ===================== */
+
+.components-checkbox-control {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--wp-grid-unit-10);
+}
+
+.components-checkbox-control__input-container {
+  position: relative;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px; /* Align with text */
+}
+
+.components-checkbox-control__input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--wp-gray-600);
+  border-radius: var(--wp-radius-small);
+  background: var(--wp-white);
+  cursor: pointer;
+  transition: 0.1s border-color ease-in-out;
+}
+
+.components-checkbox-control__input[type="checkbox"]:hover {
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-checkbox-control__input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 2px var(--wp-white), 0 0 0 4px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.components-checkbox-control__input[type="checkbox"]:checked {
+  background: var(--wp-admin-theme-color);
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-checkbox-control__input[type="checkbox"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Checkmark icon */
+.components-checkbox-control__checked {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  fill: var(--wp-white);
+  pointer-events: none;
+}
+
+.components-checkbox-control__label {
+  font-size: var(--wp-font-size-medium);
+  line-height: 20px;
+  color: var(--wp-gray-900);
+  cursor: pointer;
+}
+
+.components-checkbox-control__help {
+  font-size: var(--wp-font-size-small);
+  color: var(--wp-gray-700);
+  margin-left: 26px; /* checkbox width + gap */
+}
+
+/* =====================
+   TOGGLE SWITCH
+   ===================== */
+
+.components-form-toggle {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 16px;
+}
+
+.components-form-toggle__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.components-form-toggle__track {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 16px;
+  background-color: var(--wp-white);
+  border: 1px solid var(--wp-gray-600);
+  border-radius: 8px;
+  transition: 0.2s background-color ease, 0.2s border-color ease;
+}
+
+.components-form-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: var(--wp-gray-900);
+  border-radius: 50%;
+  box-shadow: var(--wp-elevation-x-small);
+  transition: 0.2s transform ease;
+}
+
+/* Checked state */
+.components-form-toggle.is-checked .components-form-toggle__track {
+  background-color: var(--wp-admin-theme-color);
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-form-toggle.is-checked .components-form-toggle__thumb {
+  background-color: var(--wp-white);
+  transform: translateX(16px);
+}
+
+/* Focus state */
+.components-form-toggle__input:focus + .components-form-toggle__track {
+  box-shadow: 0 0 0 2px var(--wp-white), 0 0 0 4px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+/* Disabled state */
+.components-form-toggle.is-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* =====================
+   TOGGLE CONTROL (with label)
+   ===================== */
+
+.components-toggle-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wp-grid-unit-15);
+}
+
+.components-toggle-control__label {
+  font-size: var(--wp-font-size-medium);
+  line-height: 20px;
+  color: var(--wp-gray-900);
+  flex: 1;
+}
+
+.components-toggle-control__help {
+  font-size: var(--wp-font-size-small);
+  color: var(--wp-gray-700);
+  margin-top: var(--wp-grid-unit-05);
+}
+
+/* =====================
+   RADIO BUTTONS
+   ===================== */
+
+.components-radio-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-grid-unit-10);
+}
+
+.components-radio-control__option {
+  display: flex;
+  align-items: center;
+  gap: var(--wp-grid-unit-10);
+}
+
+.components-radio-control__input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--wp-gray-600);
+  border-radius: 50%;
+  background: var(--wp-white);
+  cursor: pointer;
+  transition: 0.1s border-color ease-in-out;
+}
+
+.components-radio-control__input[type="radio"]:hover {
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-radio-control__input[type="radio"]:focus {
+  box-shadow: 0 0 0 2px var(--wp-white), 0 0 0 4px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.components-radio-control__input[type="radio"]:checked {
+  border-color: var(--wp-admin-theme-color);
+  border-width: 5px;
+}
+
+.components-radio-control__label {
+  font-size: var(--wp-font-size-medium);
+  color: var(--wp-gray-900);
+  cursor: pointer;
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Checkbox Unchecked -->
+<div class="components-checkbox-control">
+  <span class="components-checkbox-control__input-container">
+    <input type="checkbox" class="components-checkbox-control__input">
+  </span>
+  <label class="components-checkbox-control__label">Unchecked option</label>
+</div>
+
+<!-- Checkbox Checked -->
+<div class="components-checkbox-control">
+  <span class="components-checkbox-control__input-container">
+    <input type="checkbox" class="components-checkbox-control__input" checked>
+    <svg class="components-checkbox-control__checked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M16.5 7.5 10 13.9l-2.5-2.4-1 1 3.5 3.6 7.5-7.6z"/>
+    </svg>
+  </span>
+  <label class="components-checkbox-control__label">Checked option</label>
+</div>
+
+<!-- Checkbox Disabled -->
+<div class="components-checkbox-control">
+  <span class="components-checkbox-control__input-container">
+    <input type="checkbox" class="components-checkbox-control__input" disabled>
+  </span>
+  <label class="components-checkbox-control__label">Disabled option</label>
+</div>
+
+<!-- Checkbox with Help -->
+<div>
+  <div class="components-checkbox-control">
+    <span class="components-checkbox-control__input-container">
+      <input type="checkbox" class="components-checkbox-control__input" checked>
+      <svg class="components-checkbox-control__checked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M16.5 7.5 10 13.9l-2.5-2.4-1 1 3.5 3.6 7.5-7.6z"/>
+      </svg>
+    </span>
+    <label class="components-checkbox-control__label">Enable feature</label>
+  </div>
+  <p class="components-checkbox-control__help">This setting enables the experimental feature.</p>
+</div>
+
+<!-- Toggle Off -->
+<div class="components-form-toggle">
+  <input type="checkbox" class="components-form-toggle__input">
+  <span class="components-form-toggle__track"></span>
+  <span class="components-form-toggle__thumb"></span>
+</div>
+
+<!-- Toggle On -->
+<div class="components-form-toggle is-checked">
+  <input type="checkbox" class="components-form-toggle__input" checked>
+  <span class="components-form-toggle__track"></span>
+  <span class="components-form-toggle__thumb"></span>
+</div>
+
+<!-- Toggle Disabled -->
+<div class="components-form-toggle is-disabled">
+  <input type="checkbox" class="components-form-toggle__input" disabled>
+  <span class="components-form-toggle__track"></span>
+  <span class="components-form-toggle__thumb"></span>
+</div>
+
+<!-- Toggle Control (with label) -->
+<div class="components-toggle-control">
+  <span class="components-toggle-control__label">Show toolbar</span>
+  <div class="components-form-toggle is-checked">
+    <input type="checkbox" class="components-form-toggle__input" checked>
+    <span class="components-form-toggle__track"></span>
+    <span class="components-form-toggle__thumb"></span>
+  </div>
+</div>
+
+<!-- Toggle Control Off -->
+<div class="components-toggle-control">
+  <span class="components-toggle-control__label">Enable dark mode</span>
+  <div class="components-form-toggle">
+    <input type="checkbox" class="components-form-toggle__input">
+    <span class="components-form-toggle__track"></span>
+    <span class="components-form-toggle__thumb"></span>
+  </div>
+</div>
+
+<!-- Radio Group -->
+<div class="components-radio-control">
+  <label class="components-input-control__label">Image size</label>
+  <div class="components-radio-control__option">
+    <input type="radio" class="components-radio-control__input" name="size" value="small">
+    <label class="components-radio-control__label">Small</label>
+  </div>
+  <div class="components-radio-control__option">
+    <input type="radio" class="components-radio-control__input" name="size" value="medium" checked>
+    <label class="components-radio-control__label">Medium</label>
+  </div>
+  <div class="components-radio-control__option">
+    <input type="radio" class="components-radio-control__input" name="size" value="large">
+    <label class="components-radio-control__label">Large</label>
+  </div>
+</div>

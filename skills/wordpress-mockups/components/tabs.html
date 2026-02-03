@@ -1,0 +1,247 @@
+<!--
+  Component: Tabs (TabPanel)
+  Source: @wordpress/components/src/tab-panel
+  
+  Tabbed content navigation
+-->
+
+<style>
+/* =====================
+   TAB PANEL
+   ===================== */
+
+.components-tab-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tab List */
+.components-tab-panel__tabs {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--wp-gray-200);
+}
+
+.components-tab-panel__tabs[aria-orientation="vertical"] {
+  flex-direction: column;
+  border-bottom: none;
+  border-right: 1px solid var(--wp-gray-200);
+}
+
+/* Tab Button */
+.components-tab-panel__tabs-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 3px var(--wp-grid-unit-20);
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-regular);
+  color: var(--wp-gray-900);
+  cursor: pointer;
+  transition: all 0.1s linear;
+}
+
+.components-tab-panel__tabs-item:hover {
+  color: var(--wp-admin-theme-color);
+}
+
+/* Active tab indicator (bottom bar) */
+.components-tab-panel__tabs-item::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0;
+  background: var(--wp-admin-theme-color);
+  transition: height 0.1s linear;
+}
+
+.components-tab-panel__tabs-item.is-active::after {
+  height: var(--wp-admin-border-width-focus);
+}
+
+/* Vertical tabs: indicator on right */
+.components-tab-panel__tabs[aria-orientation="vertical"] .components-tab-panel__tabs-item::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: 0;
+  height: auto;
+}
+
+.components-tab-panel__tabs[aria-orientation="vertical"] .components-tab-panel__tabs-item.is-active::after {
+  width: var(--wp-admin-border-width-focus);
+}
+
+/* Focus indicator */
+.components-tab-panel__tabs-item::before {
+  content: "";
+  position: absolute;
+  top: var(--wp-grid-unit-15);
+  right: var(--wp-grid-unit-15);
+  bottom: var(--wp-grid-unit-15);
+  left: var(--wp-grid-unit-15);
+  border-radius: var(--wp-radius-small);
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.1s linear;
+}
+
+.components-tab-panel__tabs-item:focus {
+  outline: none;
+}
+
+.components-tab-panel__tabs-item:focus-visible::before {
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+}
+
+/* Tab Content */
+.components-tab-panel__tab-content {
+  padding: var(--wp-grid-unit-20);
+}
+
+.components-tab-panel__tab-content:focus {
+  outline: none;
+}
+
+.components-tab-panel__tab-content:focus-visible {
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+/* =====================
+   TAB PANEL VARIANTS
+   ===================== */
+
+/* Compact tabs (smaller height) */
+.components-tab-panel.is-compact .components-tab-panel__tabs-item {
+  height: 36px;
+  font-size: var(--wp-font-size-small);
+}
+
+/* With icons */
+.components-tab-panel__tabs-item svg {
+  fill: currentColor;
+  width: 20px;
+  height: 20px;
+  margin-right: var(--wp-grid-unit-05);
+}
+
+/* Pill-style tabs (alternative) */
+.components-tab-panel.is-pills .components-tab-panel__tabs {
+  gap: var(--wp-grid-unit-05);
+  border-bottom: none;
+  padding: var(--wp-grid-unit-05);
+  background: var(--wp-gray-100);
+  border-radius: var(--wp-radius-small);
+}
+
+.components-tab-panel.is-pills .components-tab-panel__tabs-item {
+  height: 32px;
+  padding: 0 var(--wp-grid-unit-15);
+  border-radius: var(--wp-radius-small);
+}
+
+.components-tab-panel.is-pills .components-tab-panel__tabs-item::after {
+  display: none;
+}
+
+.components-tab-panel.is-pills .components-tab-panel__tabs-item.is-active {
+  background: var(--wp-white);
+  box-shadow: var(--wp-elevation-x-small);
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Basic Tabs -->
+<div class="components-tab-panel">
+  <div class="components-tab-panel__tabs" role="tablist">
+    <button class="components-tab-panel__tabs-item is-active" role="tab" aria-selected="true">
+      Settings
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false">
+      Styles
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false">
+      Advanced
+    </button>
+  </div>
+  <div class="components-tab-panel__tab-content" role="tabpanel">
+    <p>Settings content goes here.</p>
+  </div>
+</div>
+
+<!-- Tabs with Icons -->
+<div class="components-tab-panel">
+  <div class="components-tab-panel__tabs" role="tablist">
+    <button class="components-tab-panel__tabs-item is-active" role="tab" aria-selected="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M18 4H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm.5 14c0 .3-.2.5-.5.5H6c-.3 0-.5-.2-.5-.5V6c0-.3.2-.5.5-.5h12c.3 0 .5.2.5.5v12zM7 16.5h6V15H7v1.5zm4-4h6V11h-6v1.5zM9 11H7v1.5h2V11zm6 5.5h2V15h-2v1.5z"/>
+      </svg>
+      List
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm.5 16c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5V5c0-.3.2-.5.5-.5h14c.3 0 .5.2.5.5v14zm-7-5h5v-1.5h-5V14zm0-4h5V8.5h-5V10zM7 10h4V6H7v4zm1.5-2.5h1v1h-1v-1zm-1.5 7h4v-4H7v4zm1.5-2.5h1v1h-1v-1z"/>
+      </svg>
+      Grid
+    </button>
+  </div>
+  <div class="components-tab-panel__tab-content" role="tabpanel">
+    <p>Content for the selected tab.</p>
+  </div>
+</div>
+
+<!-- Compact Tabs -->
+<div class="components-tab-panel is-compact">
+  <div class="components-tab-panel__tabs" role="tablist">
+    <button class="components-tab-panel__tabs-item is-active" role="tab">HTML</button>
+    <button class="components-tab-panel__tabs-item" role="tab">CSS</button>
+    <button class="components-tab-panel__tabs-item" role="tab">JS</button>
+  </div>
+  <div class="components-tab-panel__tab-content" role="tabpanel">
+    <p>Code content here.</p>
+  </div>
+</div>
+
+<!-- Pill-style Tabs (Segmented Control) -->
+<div class="components-tab-panel is-pills">
+  <div class="components-tab-panel__tabs" role="tablist">
+    <button class="components-tab-panel__tabs-item is-active" role="tab">Desktop</button>
+    <button class="components-tab-panel__tabs-item" role="tab">Tablet</button>
+    <button class="components-tab-panel__tabs-item" role="tab">Mobile</button>
+  </div>
+  <div class="components-tab-panel__tab-content" role="tabpanel">
+    <p>Responsive content here.</p>
+  </div>
+</div>
+
+<!-- Vertical Tabs -->
+<div class="components-tab-panel" style="flex-direction: row;">
+  <div class="components-tab-panel__tabs" role="tablist" aria-orientation="vertical" style="min-width: 150px;">
+    <button class="components-tab-panel__tabs-item is-active" role="tab" aria-selected="true" style="justify-content: flex-start;">
+      General
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false" style="justify-content: flex-start;">
+      Writing
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false" style="justify-content: flex-start;">
+      Reading
+    </button>
+    <button class="components-tab-panel__tabs-item" role="tab" aria-selected="false" style="justify-content: flex-start;">
+      Media
+    </button>
+  </div>
+  <div class="components-tab-panel__tab-content" role="tabpanel" style="flex: 1;">
+    <p>General settings content.</p>
+  </div>
+</div>

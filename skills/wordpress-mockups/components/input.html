@@ -1,0 +1,312 @@
+<!--
+  Component: Input / TextControl
+  Source: @wordpress/components/src/input-control, text-control
+  
+  Sizes:
+  - Default (40px - new default)
+  - Compact / __next36pxDefaultSize (36px - legacy)
+  - Small (32px)
+  
+  Modifiers:
+  - :disabled
+  - :focus
+  - With prefix/suffix
+  - With label
+-->
+
+<style>
+/* Input Base Container */
+.components-input-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-grid-unit-10);
+  width: 100%;
+}
+
+.components-input-control.is-horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Label */
+.components-input-control__label {
+  font-size: var(--wp-font-size-x-small);
+  font-weight: var(--wp-font-weight-medium);
+  line-height: var(--wp-font-line-height-small);
+  text-transform: uppercase;
+  color: var(--wp-gray-700);
+}
+
+/* Input Wrapper (for prefix/suffix) */
+.components-input-control__container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  background: var(--wp-white);
+  border-radius: var(--wp-radius-small);
+}
+
+.components-input-control__container:focus-within {
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+/* Backdrop (border) */
+.components-input-control__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--wp-gray-600);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.components-input-control__container:focus-within .components-input-control__backdrop {
+  border-color: var(--wp-admin-theme-color);
+}
+
+.components-input-control__container.is-disabled .components-input-control__backdrop {
+  border-color: var(--wp-gray-400);
+}
+
+/* Input Field */
+.components-input-control__input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--wp-grid-unit-15);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  line-height: var(--wp-default-line-height);
+  color: var(--wp-gray-900);
+  border-radius: var(--wp-radius-small);
+}
+
+.components-input-control__input::placeholder {
+  color: var(--wp-gray-600);
+}
+
+.components-input-control__input:disabled {
+  background: var(--wp-gray-100);
+  color: var(--wp-gray-600);
+  cursor: not-allowed;
+}
+
+/* Size: Compact (36px) */
+.components-input-control.is-compact .components-input-control__input,
+.components-input-control__input.is-compact {
+  height: 36px;
+}
+
+/* Size: Small (32px) */
+.components-input-control.is-small .components-input-control__input,
+.components-input-control__input.is-small {
+  height: 32px;
+  font-size: var(--wp-font-size-small);
+}
+
+/* Prefix */
+.components-input-control__prefix {
+  display: flex;
+  align-items: center;
+  padding-left: var(--wp-grid-unit-10);
+  color: var(--wp-gray-700);
+}
+
+.components-input-control__prefix svg {
+  fill: currentColor;
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+}
+
+.components-input-control__container:has(.components-input-control__prefix) .components-input-control__input {
+  padding-left: var(--wp-grid-unit-05);
+}
+
+/* Suffix */
+.components-input-control__suffix {
+  display: flex;
+  align-items: center;
+  padding-right: var(--wp-grid-unit-10);
+  color: var(--wp-gray-700);
+}
+
+.components-input-control__suffix svg {
+  fill: currentColor;
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+}
+
+.components-input-control__container:has(.components-input-control__suffix) .components-input-control__input {
+  padding-right: var(--wp-grid-unit-05);
+}
+
+/* Help text */
+.components-input-control__help {
+  font-size: var(--wp-font-size-small);
+  color: var(--wp-gray-700);
+  margin-top: var(--wp-grid-unit-05);
+}
+
+/* =====================
+   TEXTAREA
+   ===================== */
+
+.components-textarea-control__input {
+  display: block;
+  width: 100%;
+  min-height: 80px;
+  padding: var(--wp-grid-unit-10) var(--wp-grid-unit-15);
+  border: 1px solid var(--wp-gray-600);
+  border-radius: var(--wp-radius-small);
+  background: var(--wp-white);
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  line-height: var(--wp-default-line-height);
+  color: var(--wp-gray-900);
+  resize: vertical;
+}
+
+.components-textarea-control__input:focus {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 0.5px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.components-textarea-control__input::placeholder {
+  color: var(--wp-gray-600);
+}
+
+.components-textarea-control__input:disabled {
+  background: var(--wp-gray-100);
+  color: var(--wp-gray-600);
+  cursor: not-allowed;
+}
+
+/* =====================
+   SIMPLE INPUT (no wrapper)
+   ===================== */
+
+input.components-text-control__input {
+  display: block;
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--wp-grid-unit-10);
+  border: 1px solid var(--wp-gray-600);
+  border-radius: var(--wp-radius-small);
+  background: var(--wp-white);
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  line-height: var(--wp-default-line-height);
+  color: var(--wp-gray-900);
+}
+
+input.components-text-control__input:focus {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 0.5px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+input.components-text-control__input::placeholder {
+  color: var(--wp-gray-600);
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Basic Input -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Label</label>
+  <div class="components-input-control__container">
+    <input type="text" class="components-input-control__input" placeholder="Enter text...">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Input with value -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Title</label>
+  <div class="components-input-control__container">
+    <input type="text" class="components-input-control__input" value="My Page Title">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Input with prefix (search icon) -->
+<div class="components-input-control">
+  <div class="components-input-control__container">
+    <span class="components-input-control__prefix">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M13 5c-3.3 0-6 2.7-6 6 0 1.4.5 2.7 1.3 3.7l-3.8 3.8 1.1 1.1 3.8-3.8c1 .8 2.3 1.3 3.7 1.3 3.3 0 6-2.7 6-6s-2.8-6-6.1-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/>
+      </svg>
+    </span>
+    <input type="text" class="components-input-control__input" placeholder="Search...">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Input with suffix (unit) -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Width</label>
+  <div class="components-input-control__container">
+    <input type="number" class="components-input-control__input" value="100">
+    <span class="components-input-control__suffix">px</span>
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Compact Input (36px) -->
+<div class="components-input-control is-compact">
+  <div class="components-input-control__container">
+    <input type="text" class="components-input-control__input" placeholder="Compact input">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Small Input (32px) -->
+<div class="components-input-control is-small">
+  <div class="components-input-control__container">
+    <input type="text" class="components-input-control__input" placeholder="Small input">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Disabled Input -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Disabled</label>
+  <div class="components-input-control__container is-disabled">
+    <input type="text" class="components-input-control__input" value="Cannot edit" disabled>
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Input with Help Text -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Slug</label>
+  <div class="components-input-control__container">
+    <input type="text" class="components-input-control__input" value="my-page">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+  <p class="components-input-control__help">The slug is the URL-friendly version of the name.</p>
+</div>
+
+<!-- Horizontal Label -->
+<div class="components-input-control is-horizontal">
+  <label class="components-input-control__label" style="min-width: 80px;">Columns</label>
+  <div class="components-input-control__container" style="max-width: 80px;">
+    <input type="number" class="components-input-control__input" value="3">
+    <div class="components-input-control__backdrop"></div>
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="components-input-control">
+  <label class="components-input-control__label">Description</label>
+  <textarea class="components-textarea-control__input" placeholder="Enter description..." rows="4"></textarea>
+</div>
+
+<!-- Simple Input (legacy style, no wrapper) -->
+<input type="text" class="components-text-control__input" placeholder="Simple input">

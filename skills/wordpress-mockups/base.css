@@ -1,0 +1,106 @@
+/**
+ * WordPress Mockup Base Styles
+ * 
+ * Reset and foundational typography for WordPress UI mockups.
+ * Include after wordpress-tokens.css.
+ */
+
+/* ========================================
+ * RESET
+ * ======================================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ========================================
+ * BASE TYPOGRAPHY
+ * ======================================== */
+
+body {
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-regular);
+  line-height: var(--wp-default-line-height);
+  color: var(--wp-gray-900);
+  background: var(--wp-gray-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+ * FOCUS STYLES
+ * ======================================== */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--wp-admin-border-width-focus) solid var(--wp-admin-theme-color);
+  outline-offset: 1px;
+}
+
+/* ========================================
+ * INTERACTIVE DEFAULTS
+ * ======================================== */
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: var(--wp-admin-theme-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--wp-admin-theme-color-darker-10);
+  text-decoration: underline;
+}
+
+/* ========================================
+ * UTILITY: VISUALLY HIDDEN
+ * ======================================== */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+ * UTILITY: REDUCED MOTION
+ * ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

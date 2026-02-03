@@ -1,0 +1,294 @@
+<!--
+  Component: Panel
+  Source: @wordpress/components/src/panel
+  
+  Includes:
+  - Panel (container)
+  - Panel Header
+  - Panel Body (collapsible section)
+  - Panel Row
+-->
+
+<style>
+/* =====================
+   PANEL CONTAINER
+   ===================== */
+
+.components-panel {
+  background: var(--wp-white);
+  border: 1px solid var(--wp-gray-200);
+}
+
+.components-panel + .components-panel {
+  margin-top: -1px;
+}
+
+/* =====================
+   PANEL HEADER
+   ===================== */
+
+.components-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--wp-grid-unit-20);
+  height: 47px; /* 48px - 1px border */
+  border-bottom: 1px solid var(--wp-gray-300);
+  box-sizing: content-box;
+}
+
+.components-panel__header h2 {
+  margin: 0;
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-medium);
+  color: var(--wp-gray-900);
+}
+
+/* =====================
+   PANEL BODY
+   ===================== */
+
+.components-panel__body {
+  border-top: 1px solid var(--wp-gray-200);
+  border-bottom: 1px solid var(--wp-gray-200);
+}
+
+.components-panel__body + .components-panel__body {
+  margin-top: -1px;
+}
+
+.components-panel__body.is-opened {
+  padding: var(--wp-grid-unit-20);
+}
+
+/* Toggle Button (collapsible header) */
+.components-panel__body-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--wp-grid-unit-20);
+  padding-right: var(--wp-grid-unit-60);
+  background: none;
+  border: none;
+  font-family: var(--wp-font-family-default);
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-medium);
+  color: var(--wp-gray-900);
+  text-align: left;
+  cursor: pointer;
+  transition: 0.1s background ease-in-out;
+}
+
+.components-panel__body-toggle:hover {
+  background: var(--wp-gray-100);
+}
+
+.components-panel__body-toggle:focus {
+  box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+  outline: none;
+}
+
+/* Arrow Icon */
+.components-panel__arrow {
+  position: absolute;
+  right: var(--wp-grid-unit-20);
+  top: 50%;
+  transform: translateY(-50%);
+  fill: var(--wp-gray-900);
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+  transition: transform 0.1s ease;
+}
+
+.components-panel__body.is-opened .components-panel__arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Body Title (for non-collapsible panels) */
+.components-panel__body-title {
+  margin: 0 0 var(--wp-grid-unit-15);
+  font-size: var(--wp-font-size-x-small);
+  font-weight: var(--wp-font-weight-medium);
+  text-transform: uppercase;
+  color: var(--wp-gray-700);
+}
+
+/* =====================
+   PANEL ROW
+   ===================== */
+
+.components-panel__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: var(--wp-button-size);
+  margin-top: var(--wp-grid-unit-10);
+}
+
+.components-panel__row:first-of-type {
+  margin-top: 0;
+}
+
+.components-panel__row label {
+  margin-right: var(--wp-grid-unit-15);
+  flex-shrink: 0;
+  max-width: 75%;
+}
+
+/* =====================
+   SIDEBAR PANEL
+   (Inspector/Settings variant)
+   ===================== */
+
+.components-panel.is-sidebar {
+  border-left: none;
+  border-right: none;
+}
+
+/* Section divider within sidebar */
+.components-panel__section-divider {
+  margin: var(--wp-grid-unit-20) calc(-1 * var(--wp-grid-unit-20));
+  border: none;
+  border-top: 1px solid var(--wp-gray-200);
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Panel with Header -->
+<div class="components-panel">
+  <div class="components-panel__header">
+    <h2>Settings</h2>
+  </div>
+  <div class="components-panel__body is-opened">
+    <p>Panel content goes here.</p>
+  </div>
+</div>
+
+<!-- Panel with Collapsible Body (Closed) -->
+<div class="components-panel">
+  <div class="components-panel__body">
+    <button class="components-panel__body-toggle" aria-expanded="false">
+      Typography
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Panel with Collapsible Body (Open) -->
+<div class="components-panel">
+  <div class="components-panel__body is-opened">
+    <button class="components-panel__body-toggle" aria-expanded="true">
+      Typography
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+    <!-- Panel content below toggle when open -->
+    <div style="margin-top: var(--wp-grid-unit-15);">
+      <div class="components-panel__row">
+        <label>Font size</label>
+        <div class="components-select-control is-compact">
+          <div class="components-select-control__input-container">
+            <select class="components-select-control__input">
+              <option>Medium</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="components-panel__row">
+        <label>Line height</label>
+        <input type="number" class="components-text-control__input" value="1.5" style="width: 80px;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Multiple Collapsible Panels -->
+<div class="components-panel">
+  <div class="components-panel__body">
+    <button class="components-panel__body-toggle" aria-expanded="false">
+      Settings
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="components-panel__body is-opened">
+    <button class="components-panel__body-toggle" aria-expanded="true">
+      Advanced
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+    <div style="margin-top: var(--wp-grid-unit-15);">
+      <div class="components-panel__row">
+        <label>HTML anchor</label>
+        <input type="text" class="components-text-control__input" placeholder="my-anchor" style="flex: 1;">
+      </div>
+      <div class="components-panel__row">
+        <label>Additional CSS class(es)</label>
+        <input type="text" class="components-text-control__input" placeholder="class-name" style="flex: 1;">
+      </div>
+    </div>
+  </div>
+  <div class="components-panel__body">
+    <button class="components-panel__body-toggle" aria-expanded="false">
+      Styles
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Panel Body with Section Title -->
+<div class="components-panel">
+  <div class="components-panel__body is-opened">
+    <h3 class="components-panel__body-title">Block Settings</h3>
+    <div class="components-panel__row">
+      <label>Width</label>
+      <input type="text" class="components-text-control__input" value="100%" style="width: 100px;">
+    </div>
+    <hr class="components-panel__section-divider">
+    <h3 class="components-panel__body-title">Layout</h3>
+    <div class="components-panel__row">
+      <label>Alignment</label>
+      <select class="components-select-control__input" style="width: 100px;">
+        <option>None</option>
+        <option>Left</option>
+        <option>Center</option>
+        <option>Right</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar Panel Style -->
+<div class="components-panel is-sidebar" style="max-width: 280px;">
+  <div class="components-panel__body is-opened">
+    <button class="components-panel__body-toggle" aria-expanded="true">
+      Summary
+      <svg class="components-panel__arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"/>
+      </svg>
+    </button>
+    <div style="margin-top: var(--wp-grid-unit-15);">
+      <div class="components-panel__row">
+        <label>Status</label>
+        <span style="color: var(--wp-alert-green);">Published</span>
+      </div>
+      <div class="components-panel__row">
+        <label>Visibility</label>
+        <span>Public</span>
+      </div>
+      <div class="components-panel__row">
+        <label>Template</label>
+        <span>Single Posts</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,355 @@
+<!--
+  Component: Card
+  Source: @wordpress/components/src/card
+  
+  Container for grouping related content
+  
+  Parts:
+  - Card (container)
+  - CardHeader
+  - CardBody
+  - CardFooter
+  - CardMedia
+  - CardDivider
+-->
+
+<style>
+/* =====================
+   CARD
+   ===================== */
+
+.components-card {
+  background: var(--wp-white);
+  box-shadow: 0 0 0 1px var(--wp-gray-200);
+  border-radius: var(--wp-radius-large);
+  overflow: hidden;
+}
+
+/* Elevated card (with shadow) */
+.components-card.is-elevated {
+  box-shadow: var(--wp-elevation-small);
+}
+
+/* Bordered card */
+.components-card.is-bordered {
+  box-shadow: none;
+  border: 1px solid var(--wp-gray-200);
+}
+
+/* Size variants */
+.components-card.is-small {
+  border-radius: var(--wp-radius-medium);
+}
+
+.components-card.is-large {
+  border-radius: var(--wp-radius-large);
+}
+
+/* =====================
+   CARD HEADER
+   ===================== */
+
+.components-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--wp-grid-unit-20);
+  border-bottom: 1px solid var(--wp-gray-200);
+  box-sizing: border-box;
+}
+
+.components-card__header:last-child {
+  border-bottom: none;
+}
+
+.components-card__header-title {
+  margin: 0;
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-medium);
+  color: var(--wp-gray-900);
+}
+
+/* Compact header */
+.components-card__header.is-compact {
+  padding: var(--wp-grid-unit-15);
+}
+
+/* Shady header (gray background) */
+.components-card__header.is-shady {
+  background: var(--wp-gray-100);
+}
+
+/* =====================
+   CARD BODY
+   ===================== */
+
+.components-card__body {
+  padding: var(--wp-grid-unit-20);
+  box-sizing: border-box;
+}
+
+/* Size variants */
+.components-card__body.is-small {
+  padding: var(--wp-grid-unit-15);
+}
+
+.components-card__body.is-large {
+  padding: var(--wp-grid-unit-30);
+}
+
+/* Scrollable body */
+.components-card__body.is-scrollable {
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+/* =====================
+   CARD FOOTER
+   ===================== */
+
+.components-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--wp-grid-unit-10);
+  padding: var(--wp-grid-unit-20);
+  border-top: 1px solid var(--wp-gray-200);
+  box-sizing: border-box;
+}
+
+.components-card__footer:first-of-type {
+  border-top: none;
+}
+
+/* Compact footer */
+.components-card__footer.is-compact {
+  padding: var(--wp-grid-unit-15);
+}
+
+/* Shady footer */
+.components-card__footer.is-shady {
+  background: var(--wp-gray-100);
+}
+
+/* Justify variations */
+.components-card__footer.is-justify-start {
+  justify-content: flex-start;
+}
+
+.components-card__footer.is-justify-center {
+  justify-content: center;
+}
+
+.components-card__footer.is-justify-space-between {
+  justify-content: space-between;
+}
+
+/* =====================
+   CARD MEDIA
+   ===================== */
+
+.components-card__media {
+  overflow: hidden;
+}
+
+.components-card__media img,
+.components-card__media iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+/* =====================
+   CARD DIVIDER
+   ===================== */
+
+.components-card__divider {
+  display: block;
+  width: 100%;
+  height: 0;
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--wp-gray-200);
+}
+
+/* =====================
+   CARD ITEM (list item)
+   ===================== */
+
+.components-card__item {
+  display: flex;
+  align-items: center;
+  gap: var(--wp-grid-unit-15);
+  padding: var(--wp-grid-unit-15) var(--wp-grid-unit-20);
+  border-bottom: 1px solid var(--wp-gray-200);
+}
+
+.components-card__item:last-child {
+  border-bottom: none;
+}
+
+.components-card__item:hover {
+  background: var(--wp-gray-100);
+}
+
+.components-card__item.is-clickable {
+  cursor: pointer;
+}
+
+.components-card__item-icon {
+  display: flex;
+  color: var(--wp-gray-700);
+}
+
+.components-card__item-icon svg {
+  fill: currentColor;
+  width: var(--wp-icon-size);
+  height: var(--wp-icon-size);
+}
+
+.components-card__item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.components-card__item-title {
+  font-size: var(--wp-font-size-medium);
+  font-weight: var(--wp-font-weight-medium);
+  color: var(--wp-gray-900);
+  margin: 0;
+}
+
+.components-card__item-description {
+  font-size: var(--wp-font-size-small);
+  color: var(--wp-gray-700);
+  margin: 2px 0 0;
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Basic Card -->
+<div class="components-card">
+  <div class="components-card__body">
+    <p>This is a basic card with just a body.</p>
+  </div>
+</div>
+
+<!-- Card with Header and Body -->
+<div class="components-card">
+  <div class="components-card__header">
+    <h2 class="components-card__header-title">Card Title</h2>
+  </div>
+  <div class="components-card__body">
+    <p>Card content goes here. This can contain any elements.</p>
+  </div>
+</div>
+
+<!-- Card with Header, Body, and Footer -->
+<div class="components-card">
+  <div class="components-card__header">
+    <h2 class="components-card__header-title">Settings</h2>
+  </div>
+  <div class="components-card__body">
+    <p>Configure your settings below.</p>
+  </div>
+  <div class="components-card__footer">
+    <button class="components-button is-tertiary">Cancel</button>
+    <button class="components-button is-primary">Save</button>
+  </div>
+</div>
+
+<!-- Card with Header Actions -->
+<div class="components-card">
+  <div class="components-card__header">
+    <h2 class="components-card__header-title">Recent Activity</h2>
+    <button class="components-button is-compact has-icon" aria-label="More options">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="components-card__body">
+    <p>Activity list would go here.</p>
+  </div>
+</div>
+
+<!-- Elevated Card -->
+<div class="components-card is-elevated">
+  <div class="components-card__body">
+    <p>This card has a shadow elevation.</p>
+  </div>
+</div>
+
+<!-- Card with Media -->
+<div class="components-card" style="max-width: 300px;">
+  <div class="components-card__media">
+    <img src="https://picsum.photos/300/150" alt="Placeholder">
+  </div>
+  <div class="components-card__body">
+    <h3 style="margin: 0 0 8px;">Image Card</h3>
+    <p style="margin: 0; color: var(--wp-gray-700);">A card with a media section at the top.</p>
+  </div>
+</div>
+
+<!-- Card with Shady Header -->
+<div class="components-card">
+  <div class="components-card__header is-shady">
+    <h2 class="components-card__header-title">Shady Header</h2>
+  </div>
+  <div class="components-card__body">
+    <p>The header has a gray background.</p>
+  </div>
+</div>
+
+<!-- Card with List Items -->
+<div class="components-card">
+  <div class="components-card__header">
+    <h2 class="components-card__header-title">Pages</h2>
+  </div>
+  <div class="components-card__item is-clickable">
+    <span class="components-card__item-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M7 5.5h10a.5.5 0 01.5.5v12a.5.5 0 01-.5.5H7a.5.5 0 01-.5-.5V6a.5.5 0 01.5-.5zM17 4H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2zm-1 3.75H8v1.5h8v-1.5zM8 11h8v1.5H8V11zm6 3.25H8v1.5h6v-1.5z"/>
+      </svg>
+    </span>
+    <div class="components-card__item-content">
+      <h3 class="components-card__item-title">Home</h3>
+      <p class="components-card__item-description">Front page</p>
+    </div>
+  </div>
+  <div class="components-card__item is-clickable">
+    <span class="components-card__item-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M7 5.5h10a.5.5 0 01.5.5v12a.5.5 0 01-.5.5H7a.5.5 0 01-.5-.5V6a.5.5 0 01.5-.5zM17 4H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2zm-1 3.75H8v1.5h8v-1.5zM8 11h8v1.5H8V11zm6 3.25H8v1.5h6v-1.5z"/>
+      </svg>
+    </span>
+    <div class="components-card__item-content">
+      <h3 class="components-card__item-title">About</h3>
+      <p class="components-card__item-description">About page</p>
+    </div>
+  </div>
+  <div class="components-card__item is-clickable">
+    <span class="components-card__item-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M7 5.5h10a.5.5 0 01.5.5v12a.5.5 0 01-.5.5H7a.5.5 0 01-.5-.5V6a.5.5 0 01.5-.5zM17 4H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2zm-1 3.75H8v1.5h8v-1.5zM8 11h8v1.5H8V11zm6 3.25H8v1.5h6v-1.5z"/>
+      </svg>
+    </span>
+    <div class="components-card__item-content">
+      <h3 class="components-card__item-title">Contact</h3>
+      <p class="components-card__item-description">Contact form</p>
+    </div>
+  </div>
+</div>
+
+<!-- Card with Divider -->
+<div class="components-card">
+  <div class="components-card__body">
+    <p>First section of content.</p>
+  </div>
+  <hr class="components-card__divider">
+  <div class="components-card__body">
+    <p>Second section of content.</p>
+  </div>
+</div>

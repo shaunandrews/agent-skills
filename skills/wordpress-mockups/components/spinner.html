@@ -1,0 +1,159 @@
+<!--
+  Component: Spinner
+  Source: @wordpress/components/src/spinner
+  
+  Loading indicator
+-->
+
+<style>
+/* =====================
+   SPINNER
+   ===================== */
+
+.components-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--wp-admin-theme-color);
+  border-left-color: transparent;
+  border-radius: 50%;
+  animation: components-spinner__animation 1s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes components-spinner__animation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sizes */
+.components-spinner.is-small {
+  width: 12px;
+  height: 12px;
+  border-width: 1.5px;
+}
+
+.components-spinner.is-large {
+  width: 24px;
+  height: 24px;
+  border-width: 3px;
+}
+
+/* Inline with text */
+.components-spinner.is-inline {
+  vertical-align: middle;
+  margin-right: var(--wp-grid-unit-10);
+}
+
+/* =====================
+   LOADING PLACEHOLDER
+   ===================== */
+
+.components-placeholder__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--wp-grid-unit-40);
+  gap: var(--wp-grid-unit-15);
+  color: var(--wp-gray-700);
+}
+
+.components-placeholder__loading-text {
+  font-size: var(--wp-font-size-medium);
+}
+
+/* =====================
+   BUTTON WITH SPINNER
+   ===================== */
+
+.components-button.is-busy {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.components-button.is-busy::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  border: 2px solid currentColor;
+  border-left-color: transparent;
+  border-radius: 50%;
+  animation: components-spinner__animation 1s linear infinite;
+}
+
+.components-button.is-primary.is-busy::after {
+  border-color: var(--wp-white);
+  border-left-color: transparent;
+}
+
+/* Striped busy animation (alternative) */
+.components-button.is-busy-striped {
+  background-size: 100px 100%;
+  background-image: linear-gradient(
+    -45deg,
+    var(--wp-admin-theme-color) 33%,
+    var(--wp-admin-theme-color-darker-20) 33%,
+    var(--wp-admin-theme-color-darker-20) 70%,
+    var(--wp-admin-theme-color) 70%
+  );
+  animation: components-button__busy-animation 2500ms infinite linear;
+}
+
+@keyframes components-button__busy-animation {
+  0% {
+    background-position: 200px 0;
+  }
+}
+</style>
+
+<!-- ===================== EXAMPLES ===================== -->
+
+<!-- Default Spinner -->
+<span class="components-spinner"></span>
+
+<!-- Small Spinner -->
+<span class="components-spinner is-small"></span>
+
+<!-- Large Spinner -->
+<span class="components-spinner is-large"></span>
+
+<!-- Inline Spinner with Text -->
+<p>
+  <span class="components-spinner is-inline"></span>
+  Loading...
+</p>
+
+<!-- Loading Placeholder -->
+<div class="components-placeholder__loading">
+  <span class="components-spinner is-large"></span>
+  <span class="components-placeholder__loading-text">Loading content...</span>
+</div>
+
+<!-- Button with Spinner (busy state) -->
+<button class="components-button is-primary is-busy">
+  Saving...
+</button>
+
+<!-- Secondary Button Busy -->
+<button class="components-button is-secondary is-busy">
+  Processing...
+</button>
+
+<!-- Multiple States Demo -->
+<div style="display: flex; gap: 16px; align-items: center;">
+  <button class="components-button is-primary">Save</button>
+  <button class="components-button is-primary is-busy">Saving...</button>
+  <span class="components-spinner"></span>
+  <span>Processing</span>
+</div>
