@@ -1,0 +1,24 @@
+{
+  "name": "ddg-search",
+  "version": "1.0.0",
+  "description": "Search the web using DuckDuckGo's HTML interface",
+  "main": "src/index.js",
+  "bin": {
+    "ddg-search": "./bin/ddg-search"
+  },
+  "scripts": {
+    "test": "node src/index.js \"test query\""
+  },
+  "keywords": [
+    "duckduckgo",
+    "search",
+    "web",
+    "scraping",
+    "ai-agent"
+  ],
+  "author": "Shaun Andrews",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

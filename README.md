@@ -6,9 +6,11 @@ Custom skills for AI coding agents (Claude Code, Codex, Cursor, etc.).
 
 | Skill | Description |
 |-------|-------------|
+| [blogger](skills/blogger/) | Write, edit, and publish blog posts with style guides and SEO |
+| [ddg-search](skills/ddg-search/) | Search the web using DuckDuckGo (no API key required) |
 | [design-mockups](skills/design-mockups/) | Build and present HTML/CSS design mockups with a local preview server |
-| [wordpress-mockups](skills/wordpress-mockups/) | WordPress/Gutenberg UI mockups using design tokens, icons, and components |
 | [pressable](skills/pressable/) | Manage Pressable WordPress hosting via API |
+| [wordpress-mockups](skills/wordpress-mockups/) | WordPress/Gutenberg UI mockups using design tokens, icons, and components |
 
 ## Installation
 
