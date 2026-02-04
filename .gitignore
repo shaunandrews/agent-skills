@@ -1,4 +1,7 @@
 .DS_Store
 node_modules/
 skills/wpcom/
-docs/wpcom-*
+docs/research/
+docs/plans/
+plugins/
+
