@@ -182,6 +182,63 @@ Depending on project type, may also create:
 
 Ask the user if they want any of these, or infer from context.
 
+## Dev Server Projects
+
+For projects with a dev server (Vite, webpack, Next.js, etc.):
+
+### 1. Reserve a Port
+
+Use portkeeper to avoid conflicts:
+```bash
+portman reserve {PORT} --name "{project-name}" --desc "{description}" --tags {tags}
+```
+
+### 2. Configure Network Access
+
+Always expose dev servers on the local network so they're accessible from phones/tablets.
+
+**Vite (vite.config.js):**
+```js
+export default defineConfig({
+  server: {
+    port: {PORT},
+    host: true,  // Expose on local network
+  },
+})
+```
+
+**Next.js (package.json):**
+```json
+"scripts": {
+  "dev": "next dev -p {PORT} -H 0.0.0.0"
+}
+```
+
+**Webpack (webpack.config.js):**
+```js
+devServer: {
+  port: {PORT},
+  host: '0.0.0.0',
+}
+```
+
+**Generic Node/Express:**
+```js
+app.listen(PORT, '0.0.0.0', () => { ... })
+```
+
+### 3. Document Access
+
+In README.md, include:
+```markdown
+## Development
+
+Dev server: http://localhost:{PORT}
+Network: http://{machine-ip}:{PORT} (for mobile testing)
+```
+
+The network IP can be found with `ipconfig getifaddr en0` (macOS).
+
 ## Logs Convention
 
 The `logs/` folder is for development session notes:
