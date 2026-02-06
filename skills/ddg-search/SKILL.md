@@ -1,3 +1,8 @@
+---
+name: ddg-search
+description: Search the web using DuckDuckGo. No API key required. Use for general web searches, quick lookups, and when Brave search isn't needed.
+---
+
 # DuckDuckGo Search
 
 Search the web using DuckDuckGo's HTML interface. No API key required.

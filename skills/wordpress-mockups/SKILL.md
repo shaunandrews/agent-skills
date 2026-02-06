@@ -1,3 +1,8 @@
+---
+name: wordpress-mockups
+description: Build accurate WordPress/Gutenberg UI mockups using pre-extracted design tokens, icons, and components. Use when prototyping WordPress admin interfaces or Site Editor concepts.
+---
+
 # WordPress Mockups Skill
 
 Build accurate WordPress/Gutenberg UI mockups using pre-extracted design tokens, icons, and components.

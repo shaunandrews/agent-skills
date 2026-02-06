@@ -1,3 +1,8 @@
+---
+name: project-setup
+description: Set up a new project with standard structure, git, README, CLAUDE.md, and dev server config. Use when starting a new project or bootstrapping a workspace for a new initiative.
+---
+
 # Project Setup Skill
 
 Use this skill when creating a new project. It establishes a consistent structure across all projects.
