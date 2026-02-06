@@ -1,6 +1,6 @@
 ---
 name: ddg-search
-description: Search the web using DuckDuckGo. No API key required. Use for general web searches, quick lookups, and when Brave search isn't needed.
+description: Search the web. Use for general lookups, research, and finding information online.
 ---
 
 # DuckDuckGo Search
