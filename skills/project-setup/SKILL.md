@@ -28,7 +28,8 @@ Use kebab-case for project names (e.g., `site-editor-navigation`, `wp-cowork-plu
 ├── README.md             # Project overview, quick start
 ├── CLAUDE.md             # Guidance for Claude Code / AI agents
 ├── docs/                 # Documentation
-│   └── (project docs)
+│   ├── overview.md       # Project overview (always create this)
+│   └── (other docs)
 └── logs/                 # Session logs, dev notes (git-ignored)
     └── (daily logs)
 ```
@@ -105,6 +106,38 @@ The `/docs/` folder contains:
 - **Out of scope**: {What it doesn't cover}
 ```
 
+### docs/overview.md
+
+Always create this file. It's the canonical project overview document — the first thing someone reads to understand the project.
+
+```markdown
+# {Project Name} — Overview
+
+## What Is This?
+
+{2-3 paragraphs explaining what the project does, why it exists, and how it works}
+
+## Architecture
+
+{How the project is structured — tech stack, key patterns, data flow}
+
+## Links
+
+- **Repo:** {URL}
+- **P2/Discussion:** {URL if applicable}
+- **Related:** {Other relevant links}
+
+## Key People
+
+- **{Name}** — {Role/context}
+
+## What's Next
+
+{Current focus, open questions, next steps}
+```
+
+**Required sections:** What Is This, Links. Other sections should be included when the information is available. Always capture links — they go stale fast and are hard to recover later.
+
 ### .gitignore
 
 ```gitignore
@@ -163,14 +196,16 @@ Thumbs.db
 
 5. **Create CLAUDE.md** (use template above, fill in project details)
 
-6. **Initialize git**
+6. **Create docs/overview.md** (use template above — always include What Is This and Links sections at minimum)
+
+7. **Initialize git**
    ```bash
    git init
    git add -A
    git commit -m "Initial project setup"
    ```
 
-7. **Report to user**
+8. **Report to user**
    - Confirm project location
    - List created files
    - Suggest next steps (e.g., "Ready for docs, or should I scaffold something specific?")
