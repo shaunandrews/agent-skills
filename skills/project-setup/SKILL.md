@@ -282,9 +282,35 @@ The network IP can be found with `ipconfig getifaddr en0` (macOS).
 ## Logs Convention
 
 The `logs/` folder is for development session notes:
-- Format: `YYYY-MM-DD-{topic}.md` or `YYYY-MM-DD-HHMM.md`
+- Format: `MM-DD-YYYY-HHMM.md` (e.g., `02-06-2026-1015.md`)
 - Git-ignored so they don't clutter history
 - Useful for tracking decisions, debugging sessions, progress
+- **Create an initial log entry during project setup**
+
+### Sample Log (logs/MM-DD-YYYY-HHMM.md)
+
+```markdown
+# {MM-DD-YYYY} {HH:MM}
+
+## Session Focus
+
+{What was worked on this session — one line}
+
+## Notes
+
+- {Key decisions, observations, or context}
+- {Things tried, what worked, what didn't}
+
+## Changes
+
+- {Files created/modified}
+- {Features added or bugs fixed}
+
+## Next
+
+- {What to pick up next time}
+- {Open questions or blockers}
+```
 
 ## After Setup
 
