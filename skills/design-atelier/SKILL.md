@@ -375,6 +375,29 @@ cd {project-dir}
 npm start
 ```
 
+### Gallery Design Philosophy
+
+The gallery is a **neutral review tool**, not a branded experience. It uses system fonts, neutral grays, and minimal styling so the mockups are the focus. Features:
+
+- **Iframe previews** — Each card shows a live scaled-down preview of the page via a lazy-loaded iframe (`loading="lazy"`, `sandbox="allow-same-origin"`, `pointer-events: none`). No screenshot pipeline needed.
+- **Dynamic scaling** — A small JS function scales iframes to fill the card width on load and resize. Never use fixed CSS `transform: scale()` values — they leave gaps when card widths vary.
+- **Light/dark mode** — Automatic via `prefers-color-scheme`, plus a manual toggle persisted to localStorage.
+- **Research as a grid card** — References pages appear as regular cards with iframe previews, not as separate UI elements.
+
+### Static Export for Sharing
+
+To deploy to Vercel or any static host:
+
+```bash
+# With the server running locally:
+mkdir -p dist
+curl -s http://localhost:PORT > dist/index.html
+cp -r prompts dist/prompts
+cd dist && vercel --prod --yes
+```
+
+The gallery HTML is self-contained — no build tools needed. Just capture the rendered page and copy the prompts folder alongside it.
+
 ### Restarting After Changes
 
 Kill the running server process and restart. The server reads the filesystem on each request, so new mockup files appear automatically — but `server.js` code changes require a restart.
@@ -425,7 +448,9 @@ Kill the running server process and restart. The server reads the filesystem on 
 - **Always spawn from the main session.** Sub-agents cannot use `sessions_spawn`. Never delegate spawning to a sub-agent — it will silently fall back to sequential work, losing all parallelism. The main session is always the orchestrator.
 - **Commit often.** Git track your exploration — each phase gets a commit.
 - **Update logs.** Document what was built, what feedback was given, what changed.
-- **The gallery is your review tool.** Keep the server running. Share the network URL for mobile/remote review.
+- **The gallery is a neutral review tool.** Keep it minimal — system fonts, no personality. The mockups should be the star, not the gallery chrome. Keep the server running and share the network URL for mobile/remote review.
+- **Iframe previews > screenshots.** Lazy-loaded scaled iframes work well for galleries up to ~40 pages. No screenshot pipeline or build step needed. Only consider static screenshots if performance becomes an issue.
+- **Deploy static for sharing.** `curl localhost:PORT > dist/index.html` + copy prompts folder. No build tools needed for Vercel/static hosts.
 
 ## Related Skills
 
