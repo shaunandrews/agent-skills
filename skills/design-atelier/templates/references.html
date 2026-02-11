@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual References — Mood Board</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    color: #1a1a1a;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+  }
+
+  header {
+    padding: 80px 60px 40px;
+    border-bottom: 2px solid #1a1a1a;
+    margin-bottom: 60px;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  header p {
+    font-size: 1.1rem;
+    color: #888880;
+    max-width: 680px;
+    font-style: italic;
+  }
+
+  section {
+    padding: 0 60px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #d4d0c8;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .section-header .count {
+    font-size: 0.85rem;
+    color: #888880;
+    font-style: italic;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 40px;
+  }
+
+  .card {
+    background: #f8f6f2;
+    border: 2px solid #d4d0c8;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover {
+    border-color: #1a1a1a;
+  }
+
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .card-caption {
+    padding: 20px 24px;
+  }
+
+  .card-caption .url {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #888880;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+
+  .card-caption .url:hover {
+    color: #1a1a1a;
+    text-decoration: underline;
+  }
+
+  .card-caption .note {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .card-caption .note strong {
+    color: #1a1a1a;
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: #1a1a1a;
+    margin: 0 60px 60px;
+  }
+
+  footer {
+    padding: 60px;
+    border-top: 1px solid #d4d0c8;
+    color: #888880;
+    font-size: 0.8rem;
+    font-style: italic;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    header, section { padding-left: 24px; padding-right: 24px; }
+    header h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><!-- PROMPT NAME --> — References</h1>
+  <p><!-- Brief description of the aesthetic direction --></p>
+</header>
+
+<!-- REPEAT THIS SECTION BLOCK FOR EACH CATEGORY -->
+<section>
+  <div class="section-header">
+    <h2><!-- Category Name (e.g., "Style References") --></h2>
+    <span class="count"><!-- N references --></span>
+  </div>
+  <div class="grid">
+
+    <!-- REPEAT THIS CARD FOR EACH REFERENCE -->
+    <div class="card">
+      <img src="references/<!-- filename.jpg -->" alt="<!-- description -->">
+      <div class="card-caption">
+        <a class="url" href="<!-- source URL -->" target="_blank"><!-- display URL --></a>
+        <p class="note"><strong><!-- Key takeaway. --></strong> <!-- Detailed note on what's relevant: typography, layout, color, pattern, etc. --></p>
+      </div>
+    </div>
+    <!-- END CARD -->
+
+  </div>
+</section>
+<!-- END SECTION -->
+
+<div class="divider"></div>
+
+<footer>
+  <p>Compiled <!-- date --> — <!-- Project Name --></p>
+</footer>
+
+</body>
+</html>

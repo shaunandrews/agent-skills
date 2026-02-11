@@ -344,114 +344,229 @@ function interpretAnalysis(agg) {
   return observations;
 }
 
+// Derive voice characteristics from analysis data
+function deriveVoiceTraits(agg) {
+  const traits = [];
+  const antiTraits = [];
+
+  // Readability → conversational vs academic
+  if (agg.fleschReadingEase >= 70) {
+    traits.push('conversational');
+    antiTraits.push('academic');
+  } else if (agg.fleschReadingEase >= 50) {
+    traits.push('clear');
+  } else {
+    traits.push('dense');
+    antiTraits.push('casual');
+  }
+
+  // Sentence length → punchy vs elaborate
+  if (agg.avgSentenceLength < 13) {
+    traits.push('direct');
+    antiTraits.push('verbose');
+  } else if (agg.avgSentenceLength < 18) {
+    traits.push('moderate-paced');
+  } else {
+    traits.push('elaborate');
+    antiTraits.push('terse');
+  }
+
+  // First person → personal vs detached
+  if (agg.firstPersonRate > 0.02) {
+    traits.push('personal');
+    antiTraits.push('detached');
+  } else if (agg.firstPersonRate > 0.01) {
+    traits.push('somewhat personal');
+  } else {
+    traits.push('neutral');
+    antiTraits.push('confessional');
+  }
+
+  // Exclamations → measured vs enthusiastic
+  if (agg.exclamationRate < 0.02) {
+    traits.push('understated');
+    antiTraits.push('breathless');
+  } else if (agg.exclamationRate > 0.05) {
+    traits.push('enthusiastic');
+    antiTraits.push('restrained');
+  }
+
+  // Questions → declarative vs inquisitive
+  if (agg.questionRate < 0.04) {
+    traits.push('declarative');
+  } else if (agg.questionRate > 0.1) {
+    traits.push('inquisitive');
+  }
+
+  // Contractions → casual vs formal
+  if (agg.contractionRate > 0.015) {
+    traits.push('casual');
+    antiTraits.push('formal');
+  } else if (agg.contractionRate < 0.005) {
+    traits.push('formal');
+    antiTraits.push('slangy');
+  }
+
+  return { traits, antiTraits };
+}
+
+// Describe contraction usage
+function describeContractions(rate) {
+  if (rate > 0.02) return 'Always. Contractions are the default — the writing would sound stiff without them.';
+  if (rate > 0.01) return 'Frequently. Conversational tone relies on natural contractions.';
+  if (rate > 0.005) return 'Sometimes. Mixed usage — contractions appear but aren\'t dominant.';
+  return 'Rarely. The writing leans formal and avoids contractions.';
+}
+
+// Describe question usage
+function describeQuestions(rate) {
+  if (rate > 0.1) return 'Frequently — questions are a core part of the conversational style, used to engage the reader.';
+  if (rate > 0.05) return 'Moderately — questions appear naturally but don\'t drive the structure.';
+  if (rate > 0.02) return 'Sparingly — mostly rhetorical. The style is declarative.';
+  return 'Rarely — the writing is almost entirely declarative. Statements, not questions.';
+}
+
+// Describe exclamation usage
+function describeExclamations(rate) {
+  if (rate > 0.05) return 'Frequently — enthusiasm comes through in punctuation.';
+  if (rate > 0.02) return 'Occasionally — used for genuine emphasis, not as a habit.';
+  if (rate > 0.005) return 'Rarely — restraint is the default. The words carry the weight.';
+  return 'Almost never — measured, understated tone throughout.';
+}
+
+// Describe paragraph style
+function describeParagraphs(avgLen) {
+  if (avgLen <= 2.0) return 'Very short — 1–2 sentences per paragraph. Single-sentence paragraphs are common and intentional. Ideas land one at a time.';
+  if (avgLen <= 3.0) return 'Short — 2–3 sentences per paragraph. Tight, focused blocks. Paragraph breaks create rhythm, not just topic separation.';
+  if (avgLen <= 4.5) return 'Moderate — 3–4 sentences per paragraph. Standard editorial length with room for development.';
+  return 'Long — paragraphs run 5+ sentences. Ideas are developed within paragraphs rather than across them.';
+}
+
+// Describe reading level
+function describeReadingLevel(ease, grade) {
+  if (ease >= 80) return `Very accessible (grade ${grade}). This is "explain it to a friend" territory — no jargon, no showing off.`;
+  if (ease >= 65) return `Conversational (grade ${grade}). Easy to read without being simplistic. Smart-casual.`;
+  if (ease >= 50) return `Clear but substantive (grade ${grade}). Expects an engaged reader but doesn't make them work for it.`;
+  if (ease >= 30) return `Dense and technical (grade ${grade}). Written for a knowledgeable audience.`;
+  return `Academic (grade ${grade}). Complex sentence structure and vocabulary.`;
+}
+
 // Generate the style guide markdown
 function generateStyleGuide(agg, observations, siteUrl, mode) {
   const grade = agg.fleschKincaidGrade.toFixed(1);
   const ease = agg.fleschReadingEase.toFixed(0);
-  
+  const { traits, antiTraits } = deriveVoiceTraits(agg);
+
   // Block usage section (only if we have block data)
   let blockSection = '';
   if (agg.blockTypes && agg.blockTypes.length > 0) {
-    const topBlocks = agg.blockTypes.slice(0, 10);
+    const topBlocks = agg.blockTypes.slice(0, 8);
     const blockRows = topBlocks.map(b => `| ${b.type} | ${b.count} |`).join('\n');
     blockSection = `
+## WordPress Blocks Used
 
----
-
-## Content Blocks Used
-
-| Block Type | Count |
-|------------|-------|
+| Block Type | Frequency |
+|------------|-----------|
 ${blockRows}
 
-*This shows which WordPress blocks appear most frequently in your posts.*
 `;
   }
-  
+
+  // Person description
+  let personDesc = '';
+  if (agg.firstPersonRate > 0.02) {
+    personDesc = 'Heavy first-person usage — this is personal writing. "I" is the default perspective.';
+  } else if (agg.firstPersonRate > 0.01) {
+    personDesc = 'Moderate first-person usage — personal but not confessional.';
+  } else {
+    personDesc = 'Limited first-person — more neutral, observational tone.';
+  }
+  if (agg.secondPersonRate > 0.01) {
+    personDesc += ' Reader is addressed directly (you/your) — creates a conversational feel.';
+  } else if (agg.secondPersonRate > 0.005) {
+    personDesc += ' Occasionally addresses the reader directly.';
+  }
+
   return `# Blog Style Guide
 
-*Auto-generated from analysis of ${agg.postCount} posts*
-*Site: ${siteUrl}*
+*Auto-generated from analysis of ${agg.postCount} posts on ${siteUrl}*
+*Generated: ${new Date().toISOString().split('T')[0]}*
 
 ---
 
-## Voice Analysis
+## Voice
 
-Based on analysis of existing content:
+${traits.length > 0 ? `**This writing is:** ${traits.join(', ')}.` : ''}
+${antiTraits.length > 0 ? `**This writing is not:** ${antiTraits.join(', ')}.` : ''}
+
+### Observations
 
 ${observations.map(o => '- ' + o).join('\n')}
 
 ---
 
-## Metrics
+## Readability
+
+${describeReadingLevel(parseFloat(ease), grade)}
+
+| Metric | Value |
+|--------|-------|
+| Flesch Reading Ease | ${ease}/100 |
+| Flesch-Kincaid Grade | ${grade} |
+| Avg sentence length | ${agg.avgSentenceLength.toFixed(1)} words |
+| Avg paragraph length | ${agg.avgParagraphLength.toFixed(1)} sentences |
+
+---
+
+## Sentence & Paragraph Style
+
+**Sentences:** Average ${agg.avgSentenceLength.toFixed(1)} words (range: ${agg.ranges.sentenceLength.min.toFixed(0)}–${agg.ranges.sentenceLength.max.toFixed(0)} across posts). ${agg.avgSentenceLength < 15 ? 'Short and punchy — the writing moves fast.' : agg.avgSentenceLength < 20 ? 'Moderate length — balanced pacing.' : 'Long sentences — ideas develop within sentences.'}
+
+**Paragraphs:** ${describeParagraphs(agg.avgParagraphLength)}
+
+---
+
+## Grammar & Mechanics
+
+**Contractions:** ${describeContractions(agg.contractionRate)}
+
+**Questions:** ${describeQuestions(agg.questionRate)}
+
+**Exclamations:** ${describeExclamations(agg.exclamationRate)}
+
+**Person:** ${personDesc}
+
+---
+
+## Post Length
 
 | Metric | Value |
 |--------|-------|
 | Posts analyzed | ${agg.postCount} |
 | Total words | ${agg.totalWords.toLocaleString()} |
 | Avg post length | ${agg.avgWordCount.toFixed(0)} words |
-| Avg sentence length | ${agg.avgSentenceLength.toFixed(1)} words |
-| Avg paragraph length | ${agg.avgParagraphLength.toFixed(1)} sentences |
-| Flesch Reading Ease | ${ease}/100 |
-| Flesch-Kincaid Grade | ${grade} |
+| Shortest post | ${agg.ranges.wordCount.min} words |
+| Longest post | ${agg.ranges.wordCount.max} words |
+
+${blockSection}---
+
+## Exemplar Posts
+
+*Add 3–5 links to posts that best represent the voice:*
+
+- [ ] _Post title and URL_
+- [ ] _Post title and URL_
+- [ ] _Post title and URL_
 
 ---
 
-## Voice Characteristics
+## Notes
 
-*Based on the analysis, select the adjectives that fit:*
-
-- [ ] Friendly / Warm / Approachable
-- [ ] Professional / Authoritative / Expert  
-- [ ] Casual / Conversational / Relaxed
-- [ ] Witty / Humorous / Playful
-- [ ] Direct / No-nonsense / Efficient
-- [ ] Personal / Intimate / Confessional
-- [ ] Inspiring / Motivational / Encouraging
-
-**Your voice:** _________________________________
+*Add any additional observations, terminology preferences, or dos/don'ts here.*
 
 ---
 
-## Grammar Preferences
-
-### Contractions
-${agg.contractionRate > 0.015 ? '- [x] Always use' : agg.contractionRate > 0.005 ? '- [x] Sometimes use' : '- [x] Rarely use'}
-
-### Questions
-${agg.questionRate > 0.05 ? 'Questions appear frequently — part of the conversational style.' : 'Questions used sparingly.'}
-
-### Exclamations
-${agg.exclamationRate > 0.03 ? 'Exclamation marks used liberally.' : agg.exclamationRate > 0.01 ? 'Exclamation marks used occasionally.' : 'Exclamation marks used rarely.'}
-
-### Person
-${agg.firstPersonRate > 0.015 ? 'First person (I/we) is common — personal voice.' : 'First person used moderately.'}
-${agg.secondPersonRate > 0.01 ? 'Second person (you/your) used frequently — addresses reader directly.' : ''}
-
----
-
-## Formatting
-
-- Average paragraph: ${agg.avgParagraphLength.toFixed(1)} sentences
-- Target sentence length: ${agg.avgSentenceLength.toFixed(0)} words
-- Target reading level: Grade ${grade}
-${blockSection}
----
-
-## To Complete
-
-This style guide was auto-generated. Complete it by:
-
-1. Reading 3-5 of your best posts to get the vibe
-2. Filling in voice characteristics above
-3. Adding specific terminology preferences
-4. Adding signature phrases or patterns
-5. Including links to exemplar posts
-6. Adding dos and don'ts with examples
-
----
-
-*Generated: ${new Date().toISOString().split('T')[0]}*
+*This style guide is a starting point. Review it, add exemplar posts, and refine the voice description to make it actionable for writing.*
 `;
 }
 

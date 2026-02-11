@@ -1,0 +1,358 @@
+---
+name: design-atelier
+description: End-to-end design pipeline from brief to coded prototypes. Gathers visual references, builds design systems, and produces HTML/CSS mockups via parallel sub-agents. Supports multi-prompt projects.
+---
+
+# Design Atelier
+
+A complete pipeline from design brief → visual references → design system → coded HTML/CSS prototypes. Handles the full creative process including research, mood boarding, design system creation, and parallel mockup production.
+
+## When to Use
+
+- Designing a website from a creative brief or prompt
+- Building coded prototypes (HTML/CSS) for design concepts
+- Gathering visual references and creating mood boards
+- Producing multiple page mockups in a consistent design language
+- Multi-prompt projects where several designs share one gallery
+
+## Prerequisites
+
+- **Node.js** and **npm** (for the gallery server)
+- **headless-browser skill** (for taking screenshots without disrupting the user's screen)
+- **portman** CLI (for dev server port management)
+- Sub-agent spawning capability (for parallel mockup production)
+
+## Workflow Overview
+
+```
+Brief → References → Design System → Parallel Mockups → Iterate
+```
+
+1. **Check if project exists** — Don't re-scaffold existing projects
+2. **Parse the brief** — Extract prompts, page requirements, aesthetic direction
+3. **Gather references** — Screenshot inspiration sites, compile mood board
+4. **Create design system** — Palette, typography, patterns, components
+5. **Spawn mockup agents** — One per page, all sharing the design system
+6. **Iterate** — Handle feedback, rebuild affected pages
+
+---
+
+## Step 1: Project Setup
+
+### New Project
+
+If no project exists yet, scaffold it:
+
+```bash
+PROJECT_DIR=~/Developer/Projects/{project-name}
+mkdir -p "$PROJECT_DIR"/{prompts,docs,logs}
+cd "$PROJECT_DIR"
+git init
+npm init -y
+npm install express
+```
+
+Copy the gallery server template:
+```bash
+cp {skillDir}/templates/server.js "$PROJECT_DIR/server.js"
+```
+
+Update `package.json`:
+```bash
+npx -y json -I -f package.json -e 'this.scripts={start:"node server.js"}'
+```
+
+Reserve a port:
+```bash
+portman request 1 --name "{project-name}" --desc "Design atelier server"
+```
+
+Update the `PORT` constant in `server.js` with the assigned port.
+
+### Existing Project
+
+If the project already exists:
+1. Verify `server.js` is present and working
+2. Check which prompts already have folders in `prompts/`
+3. Add the new prompt folder: `mkdir -p prompts/{number}-{prompt-name}/{research,mockups}`
+4. The gallery server auto-discovers from `prompts/*/mockups/` — no manual index updates needed
+
+---
+
+## Step 2: Save the Brief
+
+Save ALL prompts/briefs to `docs/prompts.md`, not just the one you're working on. Include:
+- Source URL or reference
+- Full text of each prompt with page requirements
+- Who claimed which prompt (if applicable)
+- Design guidance and constraints
+
+**Don't half-document.** Save everything upfront. You will need it later.
+
+---
+
+## Step 3: Gather Visual References
+
+Use the **headless-browser skill** for screenshots. This runs in Docker — no windows pop up on the user's screen.
+
+```bash
+# Ensure the headless browser is running
+{headlessBrowserSkillDir}/scripts/ensure-running.sh
+
+# Take screenshots
+{headlessBrowserSkillDir}/scripts/browse.sh screenshot "https://example.com" /path/to/save.jpg
+```
+
+### What to Capture
+
+For each prompt, gather 12-20 references across these categories:
+
+1. **Style references** — Sites matching the target aesthetic (Cargo, Readymag, Awwwards, etc.)
+2. **Movement/era references** — Art history sources for the design movement cited in the brief
+3. **Industry references** — Best-in-class sites in the same business category
+4. **Pattern/texture references** — Google Images searches for specific visual patterns
+
+### Where to Save
+
+```
+prompts/{number}-{prompt-name}/
+└── research/
+    ├── references/          # Screenshot files (JPG/PNG)
+    │   ├── style-01-cargo-template.jpg
+    │   ├── movement-01-secession.jpg
+    │   └── industry-01-onyx-coffee.jpg
+    ├── references.html      # Compiled mood board (use template)
+    └── design-direction.md  # Written analysis of references
+```
+
+### Compile the Mood Board
+
+Copy and populate the mood board template:
+```bash
+cp {skillDir}/templates/references.html prompts/{number}-{prompt-name}/research/references.html
+```
+
+Edit the HTML to add each reference as a card with:
+- Screenshot image (relative path: `references/filename.jpg`)
+- Source URL
+- Design note — what's relevant (typography, layout, color, pattern, etc.)
+
+Group references by category with section headers.
+
+---
+
+## Step 4: Create the Design System
+
+This is the critical step. The design system brief is the shared context that every mockup agent receives. It must be specific enough to produce consistent results.
+
+Copy and fill in the template:
+```bash
+cp {skillDir}/templates/design-system.md prompts/{number}-{prompt-name}/design-system.md
+```
+
+### Required Sections
+
+**Concept** — 2-3 sentences capturing the mood, the reference points, and the brand name.
+
+**Palette** — Exact CSS custom properties. Include:
+- Primary background (usually white — see Palette Rule below)
+- Text colors (primary, secondary, muted)
+- Accent color(s)
+- Border/divider colors
+
+**Typography** — Specific Google Fonts with exact weights. Define roles:
+- Display / H1
+- Section headings / H2
+- Card titles / H3
+- Body text
+- Technical/metadata text
+- Navigation
+- Buttons / CTAs
+
+Include the Google Fonts `<link>` tag ready to copy.
+
+**Grid & Layout** — Max width, base unit, section padding, column grid.
+
+**Pattern System** — CSS code for any decorative patterns (gradients, repeating backgrounds, borders, SVG ornaments). Each pattern should have a "Use for" note.
+
+**Component Vocabulary** — How key components look:
+- Navigation
+- Hero section
+- Cards
+- Buttons (primary, secondary, accent)
+- Section dividers
+- Footer
+
+**Provocative Design Moves** — The specific things that make this design feel hand-crafted and un-AI-generated. These are the design decisions that matter most.
+
+**Page Assignments** — Which pages to build, brief description of each, and any page-specific direction.
+
+**Technical Rules** — Self-contained HTML, Google Fonts CDN, CSS-only interactions, no external images, responsive breakpoints.
+
+### ⚠️ Palette Rule
+
+**Default to WHITE backgrounds with bold colored/black geometric forms and accent colors.** Most design movements referenced in creative briefs (Werkstätte, Bauhaus, Secession, minimalism, etc.) use white space as a primary design element. Only go dark if the brief explicitly demands it (e.g., "cyberpunk," "dark mode," "noir").
+
+The most common mistake is defaulting to dark/moody palettes when the reference material is actually white-dominant. **Always check the references before choosing the palette.**
+
+---
+
+## Step 5: Spawn Mockup Agents
+
+Spawn one sub-agent per page (or logical group of pages). Each agent gets:
+
+1. The design system brief (tell it to read the file)
+2. Page-specific requirements
+3. The output file path
+4. The palette values repeated explicitly (agents sometimes skip reading files)
+5. A reminder that this is a design competition — quality matters
+
+### Agent Brief Template
+
+```
+You are building the {PAGE NAME} mockup for {brand name}.
+
+**Output file:** {project}/prompts/{number}-{name}/mockups/{page}.html
+
+**Read the design system brief:**
+Read {project}/prompts/{number}-{name}/design-system.md
+
+**Palette (repeated for clarity):**
+{list key colors}
+
+**Build these sections:**
+{numbered list of sections with specific content}
+
+**Provocative design moves to include:**
+{list specific design choices}
+
+**Technical:** Self-contained HTML, embedded CSS, Google Fonts CDN, CSS-only, no JS, no images, responsive.
+```
+
+### Spawn in Parallel
+
+Use `sessions_spawn` with labels for tracking:
+
+```
+sessions_spawn(task: "...", label: "{project}-{page}")
+```
+
+All agents can run simultaneously since they share the design system but write to separate files.
+
+---
+
+## Step 6: Iterate
+
+When feedback comes in:
+
+- **Palette corrections** — Update `design-system.md`, then respawn affected agents with "CRITICAL CORRECTION" in the brief
+- **Page splits** — Spawn new agents for the separated pages
+- **Content changes** — Respawn only the affected page agent
+- **Adding pages** — Spawn a new agent, the gallery auto-discovers the new file
+- **Gallery ordering** — Update the `pageOrder` array in `server.js`
+
+### Updating Gallery Page Order
+
+The gallery server has a `pageOrder` array that controls display order:
+
+```javascript
+const pageOrder = ['home', 'collection', 'subscriptions', 'faq', 'contact'];
+```
+
+Add new page slugs (filename without .html) in the desired order. Unlisted pages appear at the end. Restart the server after changes.
+
+---
+
+## Step 7: Adding a New Prompt to an Existing Project
+
+When adding another design prompt to an existing project:
+
+1. Create the prompt folder:
+   ```bash
+   mkdir -p prompts/{number}-{new-prompt-name}/{research,mockups}
+   ```
+
+2. Gather references (Step 3) — save to the new prompt's `research/` folder
+
+3. Create a design system (Step 4) — each prompt gets its own `design-system.md`
+
+4. Spawn mockup agents (Step 5) — they write to the new prompt's `mockups/` folder
+
+5. The gallery auto-discovers the new prompt section — no server changes needed
+
+6. If the new prompt needs different page ordering, add a per-prompt `pageOrder` in the server (or update the default)
+
+---
+
+## Gallery Server
+
+The included `server.js` template:
+- Auto-discovers prompts from `prompts/*/mockups/*.html`
+- Shows research/references links when `research/references.html` exists
+- Sorts pages by configurable order
+- Responsive, clean design
+- Shows local and network URLs
+
+### Starting the Server
+
+```bash
+cd {project-dir}
+npm start
+```
+
+### Restarting After Changes
+
+Kill the running server process and restart. The server reads the filesystem on each request, so new mockup files appear automatically — but `server.js` code changes require a restart.
+
+---
+
+## File Structure Reference
+
+```
+{project-name}/
+├── server.js                           # Gallery server (auto-discovers)
+├── package.json
+├── README.md
+├── docs/
+│   ├── overview.md                     # Project overview
+│   └── prompts.md                      # All prompts/briefs saved here
+├── logs/
+│   └── YYYY-MM-DD.md                   # Activity logs
+└── prompts/
+    ├── 01-hair-salon/
+    │   ├── research/
+    │   │   ├── references/             # Screenshot files
+    │   │   ├── references.html         # Compiled mood board
+    │   │   └── design-direction.md     # Written analysis
+    │   ├── design-system.md            # Palette, type, patterns, components
+    │   └── mockups/
+    │       ├── home.html
+    │       ├── services.html
+    │       └── contact.html
+    ├── 08-coffee-roastery/
+    │   ├── research/
+    │   │   └── ...
+    │   ├── design-system.md
+    │   └── mockups/
+    │       └── ...
+    └── {next-prompt}/
+        └── ...
+```
+
+---
+
+## Tips
+
+- **References before building.** Don't skip the research phase. The mood board informs the design system, which informs the mockups. Skipping steps produces generic output.
+- **Design system before mockups.** Don't let sub-agents freelance. The shared brief ensures consistency across pages.
+- **Check references for palette.** The #1 mistake is defaulting to dark backgrounds when the reference material is white-dominant.
+- **Repeat the palette in agent briefs.** Sub-agents sometimes skip reading files. Put the key colors directly in the spawn task.
+- **Commit often.** Git track your exploration — each phase gets a commit.
+- **Update logs.** Document what was built, what feedback was given, what changed.
+- **The gallery is your review tool.** Keep the server running. Share the network URL for mobile/remote review.
+
+## Related Skills
+
+- **headless-browser** — Used for taking reference screenshots without screen disruption
+- **project-setup** — General project scaffolding (design-atelier handles its own setup)
+- **skill-creator** — For creating new skills like this one
