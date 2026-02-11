@@ -117,103 +117,106 @@ For each prompt, gather **30-40 references** across these categories. Quality an
 
 #### Category 1: Style References (8-12)
 
-Screenshot actual websites that match or relate to the target aesthetic. Use **ONLY these tested, reliable sources** — other galleries often fail in headless browser.
+Screenshot **actual live websites** that match the target aesthetic. These are your most valuable references — real sites with real design decisions, not gallery thumbnails.
 
-**Primary galleries (A-rated, always try these first):**
+**⚠️ CRITICAL: Screenshot DESTINATION sites, NOT gallery/aggregator pages.**
+
+Screenshotting Behance search results, Awwwards listing pages, or Dribbble grids gives you the PLATFORM'S UI over and over — not the actual design work. Those platforms are for **discovering** sites, not for screenshotting directly.
+
+**The two-step research process:**
+
+**Step A — Discover sites using `web_search`:**
 ```bash
-# Awwwards — filter by style/category
-https://www.awwwards.com/websites/{category}/
-# Categories: portfolio, e-commerce, blog, corporate, event, technology, agency, fashion
-
-# Lapa Ninja — 7,300+ landing pages, excellent categories
-https://lapa.ninja/category/{category}/
-# Categories: saas, portfolio, agency, ecommerce, startup, app, blog, food, travel, fashion
-
-# One Page Love — 8,889 curated one-pagers
-https://onepagelove.com/gallery/{type}
-# Types: portfolio, landing-page, personal, product, startup
-
-# Collect UI — 14,400+ UI designs by component
-https://collectui.com/designs/{component}
-# Components: landing-page, login-page, user-profile, pricing, product-page, checkout
-
-# Httpster — clean gallery, date-based archives
-https://httpster.net/{year}/{month}/
-
-# Dribbble — search for specific aesthetics
-https://dribbble.com/search/{query}
-
-# Behance — open project galleries
-https://www.behance.net/search/projects?field={query}
+# Find actual sites via web search (faster and more targeted than browsing galleries)
+web_search "brutalist portfolio website"
+web_search "swiss typography website design"
+web_search "site:awwwards.com {aesthetic} {industry}"
+web_search "{design movement} website examples"
+web_search "best {industry} website design 2025"
 ```
 
-**Secondary galleries (B-rated, good backups):**
-- `minimal.gallery` — minimalist design focus
-- `cssdesignawards.com` — broader gallery
-- `csswinner.com` — similar to CSS Awards
-- `admiretheweb.com` — curated gallery
-- `nicelydone.club` — design screenshots
+Also search within galleries to find site names/URLs:
+```bash
+web_search "site:awwwards.com minimalist"
+web_search "site:onepagelove.com portfolio"
+web_search "site:lapa.ninja {category}"
+```
 
-**DO NOT USE these (they fail in headless browser):**
+**Step B — Screenshot the actual destination sites:**
+```bash
+# Screenshot the REAL sites you discovered, not the gallery pages
+{headlessBrowserSkillDir}/scripts/browse.sh screenshot "https://actual-site.com" /path/to/references/style-01-sitename.jpg
+```
+
+**Example workflow:**
+1. `web_search "swiss grid typography website design"` → finds links to actual sites
+2. `web_search "site:awwwards.com swiss design"` → finds Awwwards pages that NAME the sites
+3. Extract the actual site URLs from search results
+4. Screenshot `https://the-actual-site.com` — NOT `https://awwwards.com/sites/the-actual-site`
+
+**If a site fails (blocks headless, times out):**
+- Try an alternative from your search results — don't skip the slot
+- Some well-known design sites that DO work headless: Stripe, Linear, Notion, Vercel, Apple, Aesop, Kinfolk
+- If stuck, `web_search` for 2-3 more alternatives
+
+**Sites known to FAIL in headless browser (avoid):**
 - ❌ Cargo (`cargo.site`) — times out
-- ❌ SiteInspire — images break
-- ❌ Godly — newsletter overlay blocks content
 - ❌ Pinterest — login wall
 - ❌ ReadyMag — times out
 - ❌ LandBook — times out
-- ❌ DarkModeDesign — renders blank
+- ❌ Bang Bang NYC (`bangbangnyc.com`) — doesn't load
 
-**Research process for style references:**
-1. Search 2-3 of the primary galleries above with relevant category/search terms
-2. Use `web_search` to find **actual live websites** matching the aesthetic (e.g., "brutalist portfolio website 2025")
-3. Screenshot the live sites directly — these are your BEST references (real design, not gallery thumbnails)
-4. If a screenshot fails, immediately search for an alternative — don't skip
-5. Aim for variety: different sites showing different aspects (typography, layout, color, navigation, interaction patterns)
+**Aim for variety:** different sites showing different aspects (typography, layout, color, navigation, interaction patterns, hero design, grid systems, type scale).
 
 #### Category 2: Design Movement & Art References (5-8)
 
 Go deep on the aesthetic movement(s) referenced in the brief. These inform the design system's historical grounding.
 
-**Reliable sources:**
+**Two types of references here:**
+
+**A. Gallery/archive pages (OK to screenshot directly — these ARE the content):**
 ```bash
-# Behance — search for the movement directly
-https://www.behance.net/search/projects?field=swiss+design
-https://www.behance.net/search/projects?field=art+deco+poster
-
-# Dribbble — movement-specific searches
-https://dribbble.com/search/bauhaus+poster
-https://dribbble.com/search/constructivist+design
-
-# Typographic Posters — RICHEST visual density of any source (50+ posters per screenshot)
+# Typographic Posters — RICHEST visual density (50+ posters per screenshot)
 https://www.typographicposters.com/
 
-# Fonts in Use — real-world typography in context
+# Fonts in Use — real-world typography examples
 https://fontsinuse.com/in/2/formats/1/web
 
-# Met Museum collection search
+# Met Museum collection search (artwork thumbnails are the content)
 https://www.metmuseum.org/art/collection/search?q={query}
 
-# It's Nice That — design journalism with strong visuals
-https://www.itsnicethat.com/
-
-# Google Arts & Culture — museum collections
+# Google Arts & Culture
 https://artsandculture.google.com/
 ```
 
+**B. Practitioner/designer sites (use web_search to discover, then screenshot):**
+```bash
+# Find designers working in the movement
+web_search "{designer name} portfolio website"
+web_search "{design movement} contemporary designer portfolio"
+web_search "{design movement} design studio website"
+```
+
+Screenshot the actual designer portfolio sites — these show how the movement translates to modern web design.
+
+**Do NOT just screenshot Behance/Dribbble search pages.** If you find a great project on Behance, look for the designer's own portfolio URL and screenshot that instead. Behance search results all look identical (Behance's UI, not the work).
+
 **Also search for:**
-- Designer portfolios (find practitioners working in the movement via `web_search`)
-- Design archive/history sites
 - Museum exhibition pages for the specific movement
+- Design archive/history sites with visual examples
+- Wikipedia pages with good image grids for the movement (these can work as quick visual summaries)
 
 #### Category 3: Industry References (4-6)
 
 Best-in-class websites in the same business category as the prompt. These show conventional patterns you'll either adopt or subvert.
 
 **Process:**
-1. `web_search "best {industry} website design 2025"` or `"best {industry} websites"`
-2. Screenshot the top 4-6 actual sites directly
-3. Also check Awwwards/Lapa Ninja for industry categories if available
-4. Include at least 1-2 that are genuinely excellent and 1-2 that are conventional (to know what to push against)
+1. `web_search "best {industry} website design 2025"` or `"best {industry} websites"` — find actual site URLs
+2. Also: `web_search "site:awwwards.com {industry}"` to find awarded sites in the industry
+3. Screenshot the **actual business sites** directly (e.g., `https://actual-tattoo-studio.com`)
+4. If a site fails headless, find another — never screenshot a "top 10 list" article as a substitute
+5. Include at least 1-2 that are genuinely excellent and 1-2 that are conventional (to know what to push against)
+6. **Test each URL before committing** — if it returns < 10KB, it didn't render, skip it
 
 #### Category 4: Typography References (3-5)
 
