@@ -111,66 +111,185 @@ For image search URLs (Google/Bing Images), set `BROWSE_SKIP_VALIDATE=1` since t
 
 ### What to Capture
 
-For each prompt, gather **20-30 references** across these categories. **Actual website screenshots should be the MAJORITY** — image searches supplement, not replace, real site references.
+For each prompt, gather **30-40 references** across these categories. Quality and breadth matter — these references are the foundation that the design system and every mockup will be built from. Weak references = weak output.
 
-#### Category Targets (minimum counts):
+**Actual website screenshots should be the MAJORITY.** Image searches are supplemental density, not the core research.
 
-1. **Style references (6-10)** — Actual websites matching the target aesthetic. Sources: Cargo templates, Readymag examples, Awwwards, SiteInspire, Brutalist Websites, Httpster, Minimal Gallery, Godly. Search for specific design movements + "website" on these platforms. **If a site fails (HTTP 500), find an alternative — don't skip the category.**
-2. **Movement/era references (3-5)** — Art history sources, museum collection pages, design archive sites, portfolio sites of designers working in that movement. Wikipedia/archive.org pages with visual examples.
-3. **Industry references (3-5)** — Best-in-class sites in the same business category. Use web_search to find "best [industry] websites" and screenshot the top results. These show conventional patterns you'll either adopt or subvert.
-4. **Pattern/texture references (2-3)** — Specific visual patterns, textures, or techniques referenced in the brief. Can be individual site pages or curated galleries.
-5. **Image search moodboards (6-10)** — Quick visual surveys via Google and Bing Images. These are supplemental density — they should NOT be the majority of your references.
+#### Category 1: Style References (8-12)
 
-#### Finding Sites That Work
+Screenshot actual websites that match or relate to the target aesthetic. Use **ONLY these tested, reliable sources** — other galleries often fail in headless browser.
 
-The headless browser can't reach every site (some block headless Chromium). When screenshots fail:
-- **Try alternative URLs.** Cargo has dozens of templates — if one fails, try another.
-- **Use web_search** to find 2-3 alternatives in the same aesthetic.
-- **Try Awwwards/SiteInspire collection pages** which aggregate many designs in one screenshot.
-- **Never settle for <15 total references.** If you're under that, keep searching.
-
-### Site Screenshot Research Process
-
-1. **Use `web_search`** to find actual websites matching the aesthetic, industry, and design movement
-2. **Screenshot each site** with the headless browser
-3. **Retry failures** — search for alternatives, don't just skip
-4. **Aim for variety** — different sites showing different aspects (typography, layout, color, interaction patterns, navigation)
-
+**Primary galleries (A-rated, always try these first):**
 ```bash
-# Screenshot an actual site
-{headlessBrowserSkillDir}/scripts/browse.sh screenshot "https://example.com" /path/to/references/style-01-sitename.jpg
+# Awwwards — filter by style/category
+https://www.awwwards.com/websites/{category}/
+# Categories: portfolio, e-commerce, blog, corporate, event, technology, agency, fashion
 
-# If it fails, find an alternative
-# web_search "brutalist design portfolio website" → try the results
+# Lapa Ninja — 7,300+ landing pages, excellent categories
+https://lapa.ninja/category/{category}/
+# Categories: saas, portfolio, agency, ecommerce, startup, app, blog, food, travel, fashion
+
+# One Page Love — 8,889 curated one-pagers
+https://onepagelove.com/gallery/{type}
+# Types: portfolio, landing-page, personal, product, startup
+
+# Collect UI — 14,400+ UI designs by component
+https://collectui.com/designs/{component}
+# Components: landing-page, login-page, user-profile, pricing, product-page, checkout
+
+# Httpster — clean gallery, date-based archives
+https://httpster.net/{year}/{month}/
+
+# Dribbble — search for specific aesthetics
+https://dribbble.com/search/{query}
+
+# Behance — open project galleries
+https://www.behance.net/search/projects?field={query}
 ```
 
-### Image Search Moodboards (Supplemental)
+**Secondary galleries (B-rated, good backups):**
+- `minimal.gallery` — minimalist design focus
+- `cssdesignawards.com` — broader gallery
+- `csswinner.com` — similar to CSS Awards
+- `admiretheweb.com` — curated gallery
+- `nicelydone.club` — design screenshots
 
-Use the headless browser to screenshot **Google Images** and **Bing Images** searches. These provide broad visual density but should supplement — not replace — actual site screenshots. Run 4-8 searches per prompt covering:
+**DO NOT USE these (they fail in headless browser):**
+- ❌ Cargo (`cargo.site`) — times out
+- ❌ SiteInspire — images break
+- ❌ Godly — newsletter overlay blocks content
+- ❌ Pinterest — login wall
+- ❌ ReadyMag — times out
+- ❌ LandBook — times out
+- ❌ DarkModeDesign — renders blank
 
-- The design movement/aesthetic (e.g., `risograph print design aesthetic`)
-- Layout/composition patterns (e.g., `zine culture layout design DIY`)
-- The intersection of style + industry (e.g., `risograph yoga poster`)
-- Specific techniques referenced in the brief (e.g., `misregistration print effect two color`)
-- Color palettes (e.g., `risograph color palette fluorescent ink`)
-- Textures and patterns (e.g., `halftone dot pattern risograph texture`)
-- Industry-specific print/poster references (e.g., `community yoga studio poster flyer indie`)
+**Research process for style references:**
+1. Search 2-3 of the primary galleries above with relevant category/search terms
+2. Use `web_search` to find **actual live websites** matching the aesthetic (e.g., "brutalist portfolio website 2025")
+3. Screenshot the live sites directly — these are your BEST references (real design, not gallery thumbnails)
+4. If a screenshot fails, immediately search for an alternative — don't skip
+5. Aim for variety: different sites showing different aspects (typography, layout, color, navigation, interaction patterns)
+
+#### Category 2: Design Movement & Art References (5-8)
+
+Go deep on the aesthetic movement(s) referenced in the brief. These inform the design system's historical grounding.
+
+**Reliable sources:**
+```bash
+# Behance — search for the movement directly
+https://www.behance.net/search/projects?field=swiss+design
+https://www.behance.net/search/projects?field=art+deco+poster
+
+# Dribbble — movement-specific searches
+https://dribbble.com/search/bauhaus+poster
+https://dribbble.com/search/constructivist+design
+
+# Typographic Posters — RICHEST visual density of any source (50+ posters per screenshot)
+https://www.typographicposters.com/
+
+# Fonts in Use — real-world typography in context
+https://fontsinuse.com/in/2/formats/1/web
+
+# Met Museum collection search
+https://www.metmuseum.org/art/collection/search?q={query}
+
+# It's Nice That — design journalism with strong visuals
+https://www.itsnicethat.com/
+
+# Google Arts & Culture — museum collections
+https://artsandculture.google.com/
+```
+
+**Also search for:**
+- Designer portfolios (find practitioners working in the movement via `web_search`)
+- Design archive/history sites
+- Museum exhibition pages for the specific movement
+
+#### Category 3: Industry References (4-6)
+
+Best-in-class websites in the same business category as the prompt. These show conventional patterns you'll either adopt or subvert.
+
+**Process:**
+1. `web_search "best {industry} website design 2025"` or `"best {industry} websites"`
+2. Screenshot the top 4-6 actual sites directly
+3. Also check Awwwards/Lapa Ninja for industry categories if available
+4. Include at least 1-2 that are genuinely excellent and 1-2 that are conventional (to know what to push against)
+
+#### Category 4: Typography References (3-5)
+
+**Reliable sources (all A/B-rated):**
+```bash
+# Typographic Posters — outstanding, 50+ posters per screenshot
+https://www.typographicposters.com/
+
+# Fonts in Use — fonts in real-world context
+https://fontsinuse.com/in/2/formats/1/web
+
+# Typewolf — curated typography showcase
+https://typewolf.com/
+
+# Typography.com — professional specimens
+https://www.typography.com/
+```
+
+Screenshot font specimens, typographic posters, and real-world usage examples that match the brief's typographic direction.
+
+#### Category 5: Color & Pattern References (2-4)
+
+```bash
+# Color Hunt — palette grid with style categories
+https://colorhunt.co/palettes/{style}
+# Styles: pastel, vintage, retro, neon, gold, light, dark, warm, cold, summer
+
+# Coolors — palette generator
+https://coolors.co/
+
+# Hero Patterns — SVG pattern library
+https://heropatterns.com/
+```
+
+Also use image searches (Category 6) for specific color palettes and pattern references.
+
+#### Category 6: Image Search Moodboards (8-12)
+
+Use Google Images and Bing Images for broad visual surveys. These provide density and cross-reference the aesthetic from many angles.
 
 ```bash
 # Google Images
-{headlessBrowserSkillDir}/scripts/browse.sh screenshot \
+BROWSE_SKIP_VALIDATE=1 {headlessBrowserSkillDir}/scripts/browse.sh screenshot \
   "https://www.google.com/search?q=your+search+terms&tbm=isch" \
-  /path/to/research/references/search-01-google-description.jpg
+  /path/to/references/search-01-google-description.jpg
 
 # Bing Images
-{headlessBrowserSkillDir}/scripts/browse.sh screenshot \
+BROWSE_SKIP_VALIDATE=1 {headlessBrowserSkillDir}/scripts/browse.sh screenshot \
   "https://www.bing.com/images/search?q=your+search+terms" \
-  /path/to/research/references/search-02-bing-description.jpg
+  /path/to/references/search-02-bing-description.jpg
 ```
 
-**Run these in parallel** (`&` + `wait`) for speed. Name files descriptively: `search-01-google-riso-aesthetic.jpg`, `search-05-bing-zine-collage.jpg`, etc.
+**Run 8-12 searches per prompt covering ALL of these angles:**
 
-Include image searches in the mood board HTML under an "Image Search — Quick Moodboard" section — clearly separated from site screenshots.
+1. The primary design movement (e.g., `Swiss International Typographic Style poster`)
+2. The secondary aesthetic (e.g., `psychedelic gradient art`)
+3. Key designers/artists in the movement (e.g., `Müller-Brockmann poster design`)
+4. The intersection of style + industry (e.g., `brutalist tattoo studio branding`)
+5. Layout/composition patterns (e.g., `Swiss grid layout website`)
+6. Color palettes for the aesthetic (e.g., `psychedelic neon color palette`)
+7. Textures and patterns referenced in brief (e.g., `moiré optical illusion pattern`)
+8. Typography specimens (e.g., `Helvetica poster typographic design`)
+9. Industry-specific design (e.g., `tattoo studio brand identity`)
+10. Specific techniques (e.g., `CSS gradient text effect`, `vibrating complementary colors`)
+
+**Run searches in parallel** (`&` + `wait`) for speed.
+
+### Reference Quality Checklist
+
+Before moving to the design system, verify:
+- [ ] **30+ total references** (never settle for less than 25)
+- [ ] **At least 10 are actual website screenshots** (not just gallery pages or image searches)
+- [ ] **Multiple angles on the aesthetic** — you've captured typography, color, layout, patterns, and interaction patterns
+- [ ] **Industry context** — you know what the conventional version looks like (so you can subvert it)
+- [ ] **Historical grounding** — you have references from the actual design movement, not just modern interpretations
+- [ ] **No broken/empty screenshots** — review file sizes, delete anything under 10KB
 
 ### Where to Save
 
