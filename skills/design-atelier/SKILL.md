@@ -105,12 +105,66 @@ Use the **headless-browser skill** for screenshots. This runs in Docker — no w
 
 ### What to Capture
 
-For each prompt, gather 12-20 references across these categories:
+For each prompt, gather **20-30 references** across these categories. **Actual website screenshots should be the MAJORITY** — image searches supplement, not replace, real site references.
 
-1. **Style references** — Sites matching the target aesthetic (Cargo, Readymag, Awwwards, etc.)
-2. **Movement/era references** — Art history sources for the design movement cited in the brief
-3. **Industry references** — Best-in-class sites in the same business category
-4. **Pattern/texture references** — Google Images searches for specific visual patterns
+#### Category Targets (minimum counts):
+
+1. **Style references (6-10)** — Actual websites matching the target aesthetic. Sources: Cargo templates, Readymag examples, Awwwards, SiteInspire, Brutalist Websites, Httpster, Minimal Gallery, Godly. Search for specific design movements + "website" on these platforms. **If a site fails (HTTP 500), find an alternative — don't skip the category.**
+2. **Movement/era references (3-5)** — Art history sources, museum collection pages, design archive sites, portfolio sites of designers working in that movement. Wikipedia/archive.org pages with visual examples.
+3. **Industry references (3-5)** — Best-in-class sites in the same business category. Use web_search to find "best [industry] websites" and screenshot the top results. These show conventional patterns you'll either adopt or subvert.
+4. **Pattern/texture references (2-3)** — Specific visual patterns, textures, or techniques referenced in the brief. Can be individual site pages or curated galleries.
+5. **Image search moodboards (6-10)** — Quick visual surveys via Google and Bing Images. These are supplemental density — they should NOT be the majority of your references.
+
+#### Finding Sites That Work
+
+The headless browser can't reach every site (some block headless Chromium). When screenshots fail:
+- **Try alternative URLs.** Cargo has dozens of templates — if one fails, try another.
+- **Use web_search** to find 2-3 alternatives in the same aesthetic.
+- **Try Awwwards/SiteInspire collection pages** which aggregate many designs in one screenshot.
+- **Never settle for <15 total references.** If you're under that, keep searching.
+
+### Site Screenshot Research Process
+
+1. **Use `web_search`** to find actual websites matching the aesthetic, industry, and design movement
+2. **Screenshot each site** with the headless browser
+3. **Retry failures** — search for alternatives, don't just skip
+4. **Aim for variety** — different sites showing different aspects (typography, layout, color, interaction patterns, navigation)
+
+```bash
+# Screenshot an actual site
+{headlessBrowserSkillDir}/scripts/browse.sh screenshot "https://example.com" /path/to/references/style-01-sitename.jpg
+
+# If it fails, find an alternative
+# web_search "brutalist design portfolio website" → try the results
+```
+
+### Image Search Moodboards (Supplemental)
+
+Use the headless browser to screenshot **Google Images** and **Bing Images** searches. These provide broad visual density but should supplement — not replace — actual site screenshots. Run 4-8 searches per prompt covering:
+
+- The design movement/aesthetic (e.g., `risograph print design aesthetic`)
+- Layout/composition patterns (e.g., `zine culture layout design DIY`)
+- The intersection of style + industry (e.g., `risograph yoga poster`)
+- Specific techniques referenced in the brief (e.g., `misregistration print effect two color`)
+- Color palettes (e.g., `risograph color palette fluorescent ink`)
+- Textures and patterns (e.g., `halftone dot pattern risograph texture`)
+- Industry-specific print/poster references (e.g., `community yoga studio poster flyer indie`)
+
+```bash
+# Google Images
+{headlessBrowserSkillDir}/scripts/browse.sh screenshot \
+  "https://www.google.com/search?q=your+search+terms&tbm=isch" \
+  /path/to/research/references/search-01-google-description.jpg
+
+# Bing Images
+{headlessBrowserSkillDir}/scripts/browse.sh screenshot \
+  "https://www.bing.com/images/search?q=your+search+terms" \
+  /path/to/research/references/search-02-bing-description.jpg
+```
+
+**Run these in parallel** (`&` + `wait`) for speed. Name files descriptively: `search-01-google-riso-aesthetic.jpg`, `search-05-bing-zine-collage.jpg`, etc.
+
+Include image searches in the mood board HTML under an "Image Search — Quick Moodboard" section — clearly separated from site screenshots.
 
 ### Where to Save
 
@@ -199,7 +253,28 @@ The most common mistake is defaulting to dark/moody palettes when the reference 
 
 ## Step 5: Spawn Mockup Agents
 
-Spawn one sub-agent per page (or logical group of pages). Each agent gets:
+⚠️ **CRITICAL: Sub-agents cannot spawn their own sub-agents.** The `sessions_spawn` tool is not available inside sub-agent sessions. This means you CANNOT use a single "orchestrator" agent that does research → design system → spawns mockup agents. That pattern fails silently — the orchestrator will fall back to building pages sequentially, losing the parallelism benefit.
+
+### Correct Orchestration Pattern
+
+The **main session** must be the orchestrator. Run the pipeline in two phases from the main session:
+
+1. **Phase 1: Spawn a research + design system agent** — One sub-agent gathers references, builds the mood board, and writes the design system. Wait for it to complete.
+2. **Phase 2: Spawn mockup agents in parallel** — From the main session, spawn one sub-agent per page (or logical group). These run simultaneously.
+
+```
+Main Session (you)
+  ├── spawn: research + design system agent (wait for completion)
+  └── spawn (parallel, after Phase 1 completes):
+      ├── home page agent
+      ├── shop page agent
+      ├── about page agent
+      └── ... (one per page)
+```
+
+**Never delegate the spawning to a sub-agent.** Always spawn from the main session.
+
+### What Each Mockup Agent Gets
 
 1. The design system brief (tell it to read the file)
 2. Page-specific requirements
@@ -347,6 +422,7 @@ Kill the running server process and restart. The server reads the filesystem on 
 - **Design system before mockups.** Don't let sub-agents freelance. The shared brief ensures consistency across pages.
 - **Check references for palette.** The #1 mistake is defaulting to dark backgrounds when the reference material is white-dominant.
 - **Repeat the palette in agent briefs.** Sub-agents sometimes skip reading files. Put the key colors directly in the spawn task.
+- **Always spawn from the main session.** Sub-agents cannot use `sessions_spawn`. Never delegate spawning to a sub-agent — it will silently fall back to sequential work, losing all parallelism. The main session is always the orchestrator.
 - **Commit often.** Git track your exploration — each phase gets a commit.
 - **Update logs.** Document what was built, what feedback was given, what changed.
 - **The gallery is your review tool.** Keep the server running. Share the network URL for mobile/remote review.
