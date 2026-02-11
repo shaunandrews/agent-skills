@@ -103,6 +103,12 @@ Use the **headless-browser skill** for screenshots. This runs in Docker — no w
 {headlessBrowserSkillDir}/scripts/browse.sh screenshot "https://example.com" /path/to/save.jpg
 ```
 
+### Automatic Cleanup
+
+The headless browser automatically removes cookie banners, newsletter popups, GDPR overlays, chat widgets, and other noise before capturing screenshots. It also validates HTTP status codes — 404s, 403s, and server errors are skipped automatically. No extra steps needed.
+
+For image search URLs (Google/Bing Images), set `BROWSE_SKIP_VALIDATE=1` since these can return non-standard status codes.
+
 ### What to Capture
 
 For each prompt, gather **20-30 references** across these categories. **Actual website screenshots should be the MAJORITY** — image searches supplement, not replace, real site references.

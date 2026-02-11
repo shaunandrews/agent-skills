@@ -54,6 +54,24 @@ All commands go through the `browse.sh` wrapper, which handles security boundari
 
 ⚠️ If the screenshot is very small (<5KB), the site may be blocking headless browsers.
 
+### Page Cleanup (Automatic)
+
+Screenshots automatically inject `cleanup.css` and `cleanup.js` before capture. This:
+- **Hides** cookie consent banners, GDPR overlays, newsletter popups, chat widgets, and notification bars
+- **Clicks** common "Accept" / "Close" / "Dismiss" buttons (OneTrust, CookieBot, Quantcast, etc.)
+- **Restores** body scroll that modals often lock
+- **Validates** HTTP status — 404, 403, and 5xx pages are skipped with a warning instead of saving an error page screenshot
+
+To **disable** cleanup (e.g., if you need to see the raw page with overlays):
+```bash
+BROWSE_RAW=1 {skillDir}/scripts/browse.sh screenshot "https://example.com"
+```
+
+To **skip HTTP validation** (e.g., for image search URLs that return odd status codes):
+```bash
+BROWSE_SKIP_VALIDATE=1 {skillDir}/scripts/browse.sh screenshot "https://example.com"
+```
+
 ### Content (HTML)
 
 ```bash

@@ -52,11 +52,61 @@ ensure_running() {
 
 die() { echo "Error: $*" >&2; exit 1; }
 
+# ─── Cleanup injection (CSS + JS to dismiss overlays, cookie banners, etc.) ───
+
+CLEANUP_CSS=""
+CLEANUP_JS=""
+
+if [[ -f "$SCRIPT_DIR/cleanup.css" ]]; then
+  CLEANUP_CSS=$(cat "$SCRIPT_DIR/cleanup.css")
+fi
+if [[ -f "$SCRIPT_DIR/cleanup.js" ]]; then
+  CLEANUP_JS=$(cat "$SCRIPT_DIR/cleanup.js")
+fi
+
+build_cleanup_json() {
+  # Build addStyleTag and addScriptTag arrays for Browserless API
+  local parts=""
+  if [[ -n "$CLEANUP_CSS" ]]; then
+    parts="\"addStyleTag\": [{\"content\": $(printf '%s' "$CLEANUP_CSS" | jq -Rs .)}]"
+  fi
+  if [[ -n "$CLEANUP_JS" ]]; then
+    [[ -n "$parts" ]] && parts="$parts, "
+    parts="${parts}\"addScriptTag\": [{\"content\": $(printf '%s' "$CLEANUP_JS" | jq -Rs .)}]"
+  fi
+  echo "$parts"
+}
+
+# ─── Page validation (check for error pages) ───
+
+validate_page() {
+  local url="$1"
+  # Quick HEAD request to check HTTP status before full screenshot
+  local status
+  status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 10 "$url" 2>/dev/null || echo "000")
+  
+  if [[ "$status" == "404" || "$status" == "410" ]]; then
+    echo "⚠ Skipping $url — HTTP $status (not found)" >&2
+    return 1
+  fi
+  if [[ "$status" == "403" ]]; then
+    echo "⚠ Skipping $url — HTTP $status (forbidden)" >&2
+    return 1
+  fi
+  if [[ "$status" -ge 500 ]]; then
+    echo "⚠ Skipping $url — HTTP $status (server error)" >&2
+    return 1
+  fi
+  return 0
+}
+
 # ─── Commands ───
 
 cmd_screenshot() {
   local url="${1:?Usage: browse.sh screenshot <url> [output.jpg]}"
   local output="${2:-}"
+  local raw_mode="${BROWSE_RAW:-}"
+  local skip_validate="${BROWSE_SKIP_VALIDATE:-}"
   
   if [[ -z "$output" ]]; then
     # Generate a filename from the URL
@@ -67,15 +117,37 @@ cmd_screenshot() {
 
   ensure_running
 
+  # Validate HTTP status unless skipped (e.g. for image search URLs)
+  if [[ -z "$skip_validate" ]]; then
+    validate_page "$url" || return 1
+  fi
+
+  # Build the request body
+  local cleanup_fields
+  cleanup_fields=$(build_cleanup_json)
+  
+  local body
+  if [[ -n "$raw_mode" || -z "$cleanup_fields" ]]; then
+    # Raw mode: no cleanup injection
+    body="{
+      \"url\": $(printf '%s' "$url" | jq -Rs .),
+      \"gotoOptions\": {\"waitUntil\": \"networkidle2\", \"timeout\": 30000},
+      \"options\": {\"type\": \"jpeg\", \"quality\": 85}
+    }"
+  else
+    body="{
+      \"url\": $(printf '%s' "$url" | jq -Rs .),
+      \"gotoOptions\": {\"waitUntil\": \"networkidle2\", \"timeout\": 30000},
+      \"options\": {\"type\": \"jpeg\", \"quality\": 85},
+      ${cleanup_fields}
+    }"
+  fi
+
   local http_code
   http_code=$(curl -s -w "%{http_code}" -o "$output" \
     -X POST "${BASE_URL}/chromium/screenshot?token=${TOKEN}" \
     -H "Content-Type: application/json" \
-    -d "{
-      \"url\": $(printf '%s' "$url" | jq -Rs .),
-      \"gotoOptions\": {\"waitUntil\": \"networkidle2\", \"timeout\": 30000},
-      \"options\": {\"type\": \"jpeg\", \"quality\": 85}
-    }")
+    -d "$body")
 
   if [[ "$http_code" -ge 400 ]]; then
     rm -f "$output"

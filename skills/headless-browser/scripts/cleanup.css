@@ -1,0 +1,134 @@
+/*
+ * cleanup.css — Hide common overlays, cookie banners, newsletter popups,
+ * and consent dialogs before taking screenshots.
+ *
+ * Injected via Browserless addStyleTag before screenshot capture.
+ * Uses !important to override inline styles from third-party scripts.
+ */
+
+/* ── Cookie / Consent / GDPR banners ── */
+[class*="cookie" i],
+[class*="consent" i],
+[class*="gdpr" i],
+[class*="cookie-banner" i],
+[class*="cookie-notice" i],
+[class*="cookie-popup" i],
+[class*="cookie-bar" i],
+[class*="cookie-wall" i],
+[class*="cc-banner" i],
+[class*="cc-window" i],
+[class*="CookieConsent" i],
+[id*="cookie" i],
+[id*="consent" i],
+[id*="gdpr" i],
+[id*="CybotCookiebot" i],
+[id*="onetrust" i],
+[id*="truste" i],
+[id*="cookiebot" i],
+[id*="usercentrics" i],
+[id*="didomi" i],
+[id*="sp_message" i],
+[id*="osano" i],
+/* OneTrust specific */
+.onetrust-consent-sdk,
+.onetrust-pc-dark-filter,
+#onetrust-banner-sdk,
+#onetrust-consent-sdk,
+/* CookieBot */
+#CybotCookiebotDialog,
+#CybotCookiebotDialogBodyUnderlay,
+/* Quantcast / IAB */
+[id*="quantcast" i],
+.qc-cmp-ui-container,
+.qc-cmp2-container,
+/* Complianz */
+.cmplz-cookiebanner,
+#cmplz-cookiebanner-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── Newsletter / Email signup popups ── */
+[class*="newsletter" i][class*="popup" i],
+[class*="newsletter" i][class*="modal" i],
+[class*="newsletter" i][class*="overlay" i],
+[class*="subscribe" i][class*="popup" i],
+[class*="subscribe" i][class*="modal" i],
+[class*="email" i][class*="popup" i],
+[class*="signup" i][class*="popup" i],
+[class*="signup" i][class*="modal" i],
+[id*="newsletter" i][id*="popup" i],
+[id*="newsletter" i][id*="modal" i],
+[id*="subscribe" i][id*="modal" i],
+/* Mailchimp */
+#PopupSignupForm_0,
+/* Klaviyo */
+[class*="klaviyo" i][class*="popup" i],
+[class*="klaviyo" i][class*="modal" i],
+div[data-testid*="popup" i] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── Generic modal / overlay / popup patterns ── */
+[class*="modal-overlay" i],
+[class*="modal-backdrop" i],
+[class*="popup-overlay" i],
+[class*="overlay-background" i],
+[class*="lightbox-overlay" i],
+.modal-backdrop,
+.fade.modal-backdrop,
+[class*="interstitial" i],
+[class*="age-gate" i],
+[class*="age-verification" i] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── Notification bars (top/bottom sticky banners) ── */
+[class*="notification-bar" i],
+[class*="announcement-bar" i],
+[class*="promo-bar" i],
+[class*="top-bar" i][class*="notice" i],
+[class*="alert-bar" i],
+[class*="info-bar" i] {
+  display: none !important;
+}
+
+/* ── Chat widgets ── */
+[class*="intercom" i],
+[id*="intercom" i],
+[class*="drift" i],
+[id*="drift" i],
+[class*="crisp" i],
+[id*="crisp" i],
+[class*="zendesk" i],
+[id*="launcher" i][class*="chat" i],
+[class*="tawk" i],
+[id*="tawk" i],
+[class*="hubspot" i][class*="chat" i],
+iframe[title*="chat" i],
+iframe[title*="intercom" i] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* ── Restore body scroll (modals often lock it) ── */
+body.modal-open,
+body.no-scroll,
+body.overflow-hidden,
+body[style*="overflow: hidden"],
+body[style*="overflow:hidden"],
+html.modal-open,
+html.no-scroll,
+html[style*="overflow: hidden"],
+html[style*="overflow:hidden"] {
+  overflow: auto !important;
+  position: static !important;
+}
