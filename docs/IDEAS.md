@@ -159,7 +159,6 @@ Find WordPress/Gutenberg components from screenshots or descriptions.
 - "What styles apply to this toolbar?"
 
 **Would leverage:**
-- wordpress-mockups skill (tokens, components knowledge)
 - Gutenberg source structure familiarity
 
 ---

@@ -13,9 +13,8 @@ Custom skills repository for AI agents. A collection of specialized tools and ca
 
 ### Active Skills
 - **blogger** ✍️ — Blog writing companion with style guides, post analysis, and editing tools
-- **design-mockups** 🎨 — Generate design mockups with proper tokens and components
-- **wordpress-mockups** 🖼️ — WordPress-specific design system tokens, components, and icons for admin UI mockups
 - **pressable** 🚀 — Pressable hosting API integration for site management, backups, and caching
+- **project-setup** — Bootstrap a consistent project workspace
 
 ## Blogger Skill Details
 

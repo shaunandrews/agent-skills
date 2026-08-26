@@ -7,10 +7,8 @@ Custom skills for AI coding agents (Claude Code, Codex, Cursor, etc.).
 | Skill | Description |
 |-------|-------------|
 | [blogger](skills/blogger/) | Write, edit, and publish blog posts with style guides and SEO |
-| [headless-browser](skills/headless-browser/) | Browse the web invisibly via headless Chromium in Docker |
-| [design-mockups](skills/design-mockups/) | Build and present HTML/CSS design mockups with a local preview server |
 | [pressable](skills/pressable/) | Manage Pressable WordPress hosting via API |
-| [wordpress-mockups](skills/wordpress-mockups/) | WordPress/Gutenberg UI mockups using design tokens, icons, and components |
+| [project-setup](skills/project-setup/) | Bootstrap a consistent project workspace |
 
 ## Installation
 
@@ -18,8 +16,7 @@ Copy or symlink skills into your agent's skills directory:
 
 ```bash
 # Example: symlink into your workspace
-ln -sf /path/to/agent-skills/skills/design-mockups /path/to/your/skills/
-ln -sf /path/to/agent-skills/skills/wordpress-mockups /path/to/your/skills/
+ln -sf /path/to/agent-skills/skills/blogger /path/to/your/skills/
 ln -sf /path/to/agent-skills/skills/pressable /path/to/your/skills/
 ```
 
