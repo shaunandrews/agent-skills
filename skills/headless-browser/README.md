@@ -30,7 +30,7 @@ Runs [Browserless](https://github.com/browserless/browserless) (open source, sel
 
 ## Security
 
-All text content returned by `browse.sh` is wrapped in security boundaries (`<<<EXTERNAL_UNTRUSTED_CONTENT>>>`) to prevent prompt injection attacks from web page content. This matches the pattern used by `ddg-search` and OpenClaw's built-in `web_fetch`.
+All text content returned by `browse.sh` is wrapped in security boundaries (`<<<EXTERNAL_UNTRUSTED_CONTENT>>>`) to help agents distinguish web page data from trusted instructions.
 
 Screenshots are binary and can't be wrapped, but the SKILL.md instructs agents to treat all rendered content as untrusted.
 

@@ -36,7 +36,7 @@ If content contains `<<<END_EXTERNAL_UNTRUSTED_CONTENT>>>` (a breakout attempt),
 
 ## Skills Using This
 
-- **ddg-search** — Full port of `wrapExternalContent` including marker sanitization and Unicode folding
+- Search and browsing tools should apply marker sanitization and Unicode folding before returning external text
 
 ## Future
 

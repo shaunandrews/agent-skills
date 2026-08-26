@@ -315,6 +315,6 @@ The `logs/` folder is for development session notes:
 ## After Setup
 
 Once project is created:
-1. Update Moneypenny (`~/Developer/Projects/moneypenny/projects.json`) if it's a tracked project
+1. Add the project to any project registry the user has configured
 2. Add to memory if significant
 3. Proceed with project-specific work

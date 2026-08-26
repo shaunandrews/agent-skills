@@ -274,7 +274,7 @@ ssh -i ~/.credentials/pressable-ssh/id_ed25519 {ssh-username}@ssh.pressable.com
 ```
 Host pressable-mysite
   HostName ssh.pressable.com
-  User id959e223a7c76e64
+  User {ssh-username}
   IdentityFile ~/.credentials/pressable-ssh/id_ed25519
   IdentitiesOnly yes
 ```

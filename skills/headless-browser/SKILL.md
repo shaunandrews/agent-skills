@@ -108,7 +108,7 @@ BROWSE_SKIP_VALIDATE=1 {skillDir}/scripts/browse.sh screenshot "https://example.
 ❌ **Don't use for:**
 - Sites requiring authentication (use the Chrome relay `profile="chrome"` instead)
 - Simple text content extraction (`web_fetch` is faster and lighter)
-- Web searches (`web_search` or `ddg-search` are better)
+- Web searches (use the agent's native search tool instead)
 
 ## Configuration
 

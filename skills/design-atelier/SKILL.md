@@ -560,4 +560,3 @@ Kill the running server process and restart. The server reads the filesystem on 
 
 - **headless-browser** — Used for taking reference screenshots without screen disruption
 - **project-setup** — General project scaffolding (design-atelier handles its own setup)
-- **skill-creator** — For creating new skills like this one
