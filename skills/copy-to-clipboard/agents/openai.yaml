@@ -1,0 +1,4 @@
+interface:
+  display_name: "Copy to Clipboard"
+  short_description: "Copy requested text to the macOS clipboard."
+  default_prompt: "Copy the requested text to my macOS clipboard, resolving references like this or that when needed."

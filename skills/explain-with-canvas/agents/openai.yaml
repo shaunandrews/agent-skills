@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain With Canvas"
+  short_description: "Map codebases and flows onto Agent Canvas"
+  default_prompt: "Use $explain-with-canvas to explain this codebase visually on Agent Canvas."

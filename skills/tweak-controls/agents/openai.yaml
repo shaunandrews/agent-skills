@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tweak Controls"
+  short_description: "Add temporary draggable controls for live UI tuning"
+  default_prompt: "Use $tweak-controls to add a temporary draggable panel for tuning this UI live."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Review Guide"
+  short_description: "Draft reviewable large PR descriptions"
+  default_prompt: "Use $pr-review-guide to update this PR description into a human-friendly review guide while preserving screenshots."
